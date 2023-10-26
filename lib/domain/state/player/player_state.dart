@@ -12,3 +12,11 @@ class PlayerLoaded extends PlayerState {
 }
 
 class PlayerLoading extends PlayerState {}
+
+class PlayerBattle extends PlayerState {
+  Player player;
+  GameObject mob;
+  BattleController battleController;
+
+  PlayerBattle(this.player, this.mob, this.battleController);
+}

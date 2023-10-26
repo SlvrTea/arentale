@@ -1,6 +1,6 @@
 
 import 'package:arentale/domain/game/player/stat_element.dart';
-import 'package:arentale/domain/state/player_bloc.dart';
+import 'package:arentale/domain/state/player/player_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';

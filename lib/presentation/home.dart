@@ -1,8 +1,7 @@
-import 'package:arentale/domain/state/player_bloc.dart';
+import 'package:arentale/domain/state/player/player_bloc.dart';
 import 'package:arentale/presentation/charInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import '../domain/state/navigation_state.dart';
 
 class Wrapper extends StatelessWidget {
@@ -57,12 +56,13 @@ class Home extends StatelessWidget {
   List<Widget> _getBody() {
     return <Widget>[
       Center(
-          child: CircularPercentIndicator(
-            radius: 50,
-            header: const Text('Win rate'),
-            progressColor: Colors.red,
-            center: const Text('100%'),
-          )
+        child: ElevatedButton(
+          onPressed: () {
+
+          },
+          child: const Text('Battle Test'),
+
+        ),
       ),
       const Center(child: Text('Map')),
       const CharInfo()

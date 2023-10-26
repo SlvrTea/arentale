@@ -16,4 +16,6 @@ abstract class GameObject {
   void takeDamage({required int value});
 
   void consumeMP({required int value});
+
+  Map<String, dynamic> cast(String name);
 }

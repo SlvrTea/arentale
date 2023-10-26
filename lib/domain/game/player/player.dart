@@ -36,6 +36,12 @@ class Player extends GameObject {
     // TODO: implement takeDamage
   }
 
+  @override
+  Map<String, dynamic> cast(String name) {
+    // TODO: implement cast
+    throw UnimplementedError();
+  }
+
   num getATK() {
     num ATK = 0;
     switch(info['class']) {
