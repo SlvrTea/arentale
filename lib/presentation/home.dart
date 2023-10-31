@@ -3,6 +3,7 @@ import 'package:arentale/presentation/charInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../domain/state/navigation_state.dart';
+import 'battle.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key, required this.uuid});
@@ -36,7 +37,7 @@ class Home extends StatelessWidget {
           appBar: AppBar(title: const Text('Arentale Pre Alpha')),
           body: BlocBuilder<NavigationBloc, int>(
             builder: (context, state) {
-              return _getBody()[state];
+              return _getBody(context)[state];
             },
           ),
           bottomNavigationBar: _getNavigationBar(),
@@ -53,12 +54,14 @@ class Home extends StatelessWidget {
     );
   }
 
-  List<Widget> _getBody() {
+  List<Widget> _getBody(context) {
     return <Widget>[
       Center(
         child: ElevatedButton(
           onPressed: () {
-
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const Battle())
+            );
           },
           child: const Text('Battle Test'),
 

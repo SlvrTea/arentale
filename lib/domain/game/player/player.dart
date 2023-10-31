@@ -6,11 +6,13 @@ import 'package:arentale/domain/game/game_object.dart';
 import '../stat.dart';
 
 class Player extends GameObject {
-  final Map<String, dynamic> info;
-  Player({required super.stats,
+
+  Player({
+    required super.stats,
     required super.inventory,
     required super.equip,
-    required this.info});
+    required super.info
+  });
 
   get HP => stats.HP.finalValue + (equip.getStat('VIT') + stats.VIT.finalValue) * 5;
   get maxHP => stats.HP.finalValue + (equip.getStat('VIT') + stats.VIT.finalValue) * 5;
@@ -37,7 +39,7 @@ class Player extends GameObject {
   }
 
   @override
-  Map<String, dynamic> cast(String name) {
+  Map<String, dynamic> cast({required String name}) {
     // TODO: implement cast
     throw UnimplementedError();
   }

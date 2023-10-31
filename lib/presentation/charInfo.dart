@@ -79,7 +79,7 @@ class CharInfo extends StatelessWidget {
             );
           } else {
             BlocProvider.of<PlayerBloc>(context).add(PlayerGetPlayerEvent());
-            return const Center(child: Text('Error'));
+            return const Center();
           }
         },
       ),
