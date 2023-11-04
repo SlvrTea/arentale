@@ -1,8 +1,11 @@
 
+import 'dart:math';
+
 import 'package:arentale/domain/game/game_object.dart';
-import 'package:arentale/domain/state/player/player_bloc.dart';
+import 'package:arentale/domain/state/battle/battle_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:arentale/domain/game/skill.dart';
 
 class Battle extends StatelessWidget {
   const Battle({super.key});
@@ -11,11 +14,10 @@ class Battle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (context) => PlayerBloc(),
-        child: BlocBuilder<PlayerBloc, PlayerState>(
+        create: (context) => BattleBloc(),
+        child: BlocBuilder<BattleBloc, BattleState>(
           builder: (context, state) {
-            BlocProvider.of<PlayerBloc>(context).add(PlayerStartBattleEvent());
-            if (state is PlayerBattle) {
+            if (state is BattleLoadedState) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -25,13 +27,38 @@ class Battle extends StatelessWidget {
                       MediaQuery.of(context).size.height,
                       MediaQuery.of(context).size.width
                   ),
-                  _getPlayerTile(state.player)
+                  _getPlayerTile(state.player),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: state.player.skills.map((e) => IconButton(
+                      onPressed: () {
+                        Skill skill = getSkill(state.player, state.mob, e)!;
+                        skill.cast().forEach((element) {
+                          state.battleController.loop.events.add(element);
+                        });
+
+                        getSkill(state.mob, state.player, state.mob.cast())!.cast().forEach((element) {
+                          state.battleController.loop.events.add(element);
+                        });
+
+                        state.battleController.turn();
+                        BlocProvider.of<BattleBloc>(context).add(BattleLogUpdateEvent(state));
+                      },
+                      icon: Image.asset(getSkill(state.player, state.mob, e)!.iconPath),
+                      tooltip: getSkill(state.player, state.mob, e)!.tooltip,
+                      )
+                    ).toList()
+                  ),
                 ],
               );
+            } else if (state is BattleLoadingState){
+              return const Center(
+                  child: CircularProgressIndicator()
+              );
+            } else {
+              BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent('bat'));
+              return const Center();
             }
-            return const Center(
-                child: CircularProgressIndicator()
-            );
           },
         ),
       ),
@@ -57,7 +84,7 @@ class Battle extends StatelessWidget {
   Widget _getEnemyTile(GameObject enemy) {
     return Card(
       child: ListTile(
-        title: const Text('TEST ENEMY'),
+        title:  Text(enemy.info['name']),
         leading: Column(
           children: [
             const Padding(
@@ -114,7 +141,7 @@ class Battle extends StatelessWidget {
   
   Widget _getBattleLog(String log, double height, double width) {
     return SizedBox(
-      height: height * 0.75,
+      height: height * 0.65,
       width: width,
       child: SingleChildScrollView(
         child: Card(

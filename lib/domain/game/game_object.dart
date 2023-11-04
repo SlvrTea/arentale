@@ -1,28 +1,46 @@
 
 import 'package:arentale/domain/game/stats.dart';
-import 'player/equip.dart';
 
 abstract class GameObject {
   final Stats stats;
-  final Map<String, dynamic> inventory;
-  final Equip equip;
   final Map<String, dynamic> info;
+  final List effects = [];
 
   GameObject({
     required this.stats,
-    required this.inventory,
-    required this.equip,
     required this.info
     });
 
-  get HP => stats.HP.finalValue;
-  get maxHP => stats.HP.baseValue;
-  get MP => stats.MP.finalValue;
-  get maxMP => stats.MP.baseValue;
+  int get HP => stats.HP.finalValue;
+  int get maxHP => stats.HP.baseValue;
+  int get MP => stats.MP.finalValue;
+  int get maxMP => stats.MP.baseValue;
+  int get ATK => getATK();
+  int get MATK => getMATK();
 
-  void takeDamage({required int value});
+  get STR => stats.STR.finalValue;
+  get INT => stats.INT.finalValue;
+  get VIT => stats.VIT.finalValue;
+  get SPI => stats.SPI.finalValue;
+  get DEX => stats.DEX.finalValue;
 
-  void consumeMP({required int value});
+  void takeDamage(int value);
 
-  Map<String, dynamic> cast({required String name});
+  void consumeMP(int value);
+
+  int getATK();
+
+  int getMATK();
+
+  int crit() {
+    return 1;
+  }
+
+  int evade() {
+    return 1;
+  }
+
+  String cast() {
+    return '';
+  }
 }

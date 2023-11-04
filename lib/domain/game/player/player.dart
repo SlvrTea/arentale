@@ -1,24 +1,41 @@
 
-import 'dart:math';
-
 import 'package:arentale/domain/game/game_object.dart';
+import 'package:arentale/domain/game/stat_modifier.dart';
 
 import '../stat.dart';
+import 'equip.dart';
 
 class Player extends GameObject {
+  final List skills;
+  final Map<String, dynamic> inventory;
+  final Equip equip;
+  late Stat _statHP;
+  late Stat _statMP;
 
   Player({
     required super.stats,
-    required super.inventory,
-    required super.equip,
-    required super.info
-  });
+    required super.info,
+    required this.inventory,
+    required this.equip,
+    required this.skills
+  }) {
+    _statHP = Stat(stats.HP.finalValue + (equip.getStat('VIT') + stats.VIT.finalValue) * 5);
+    _statMP = Stat(stats.MP.finalValue + (equip.getStat('SPI') + stats.SPI.finalValue) * 3);
+  }
 
-  get HP => stats.HP.finalValue + (equip.getStat('VIT') + stats.VIT.finalValue) * 5;
-  get maxHP => stats.HP.finalValue + (equip.getStat('VIT') + stats.VIT.finalValue) * 5;
-  get MP => stats.MP.finalValue + (equip.getStat('SPI') + stats.SPI.finalValue) * 3;
-  get maxMP => stats.MP.finalValue + (equip.getStat('SPI') + stats.SPI.finalValue) * 3;
+  @override
+  int get HP => _statHP.finalValue;
+  @override
+  int get maxHP => _statHP.baseValue;
+
+  @override
+  int get MP => _statMP.finalValue;
+  @override
+  get maxMP => _statMP.baseValue;
+
+  @override
   get ATK => getATK();
+  @override
   get MATK => getMATK();
   get STR => stats.STR.finalValue + (equip.getStat('STR'));
   get INT => stats.INT.finalValue + (equip.getStat('INT'));
@@ -29,23 +46,18 @@ class Player extends GameObject {
   // Stat get critDamage => Stat(1 + pow(DEX, DEX/1000));
 
   @override
-  void consumeMP({required int value}) {
-    // TODO: implement consumeMP
+  void consumeMP(int value) {
+    _statMP.addModifier(StatModifier(-value));
   }
 
   @override
-  void takeDamage({required int value}) {
-    // TODO: implement takeDamage
+  void takeDamage(int value) {
+    _statHP.addModifier(StatModifier(-value));
   }
 
   @override
-  Map<String, dynamic> cast({required String name}) {
-    // TODO: implement cast
-    throw UnimplementedError();
-  }
-
-  num getATK() {
-    num ATK = 0;
+  int getATK() {
+    int ATK = 0;
     switch(info['class']) {
       case 'Warrior':
         ATK = equip.getStat('ATK') + (equip.getStat('STR') + stats.STR.finalValue) * 3;
@@ -57,8 +69,9 @@ class Player extends GameObject {
     return ATK;
   }
 
-  num getMATK() {
-    num MATK =0;
+  @override
+  int getMATK() {
+    int MATK =0;
     switch(info['class']) {
       case 'Warrior':
         MATK = equip.getStat('MATK') + (equip.getStat('INT') + stats.INT.finalValue) % 3;

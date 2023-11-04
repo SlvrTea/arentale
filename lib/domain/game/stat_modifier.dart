@@ -1,7 +1,7 @@
 
 class StatModifier{
-  String type = 'flat';
-  int value = 0;
+  final String type;
+  final int value;
 
-  StatModifier(this.value, this.type);
+  StatModifier(this.value, {this.type = 'flat'});
 }

@@ -1,39 +1,34 @@
 import 'package:arentale/domain/game/stat_modifier.dart';
 
 class Stat {
-  int baseValue = 0;
-  int finalValue = 0;
-  final List<StatModifier> modifiers = [];
+  final int baseValue;
+  int get finalValue => _getFinalValue();
+  List<StatModifier> modifiers = [];
 
-  Stat(int value) {
-    baseValue = value;
-    finalValue = value;
-  }
+  Stat(this.baseValue);
 
   void addModifier(StatModifier modifier) {
     modifiers.add(modifier);
-    finalValue = baseValue;
-    setFinalValue();
   }
 
   void removeModifier(StatModifier modifier) {
     modifiers.remove(modifier);
-    finalValue = baseValue;
-    setFinalValue();
   }
 
-  void setFinalValue() {
+  int _getFinalValue() {
+    int value = baseValue;
     if(modifiers.isNotEmpty) {
       for(StatModifier modifier in modifiers) {
         if(modifier.type == 'flat') {
-          finalValue += modifier.value;
+          value += modifier.value;
         }
       }
       for(StatModifier modifier in modifiers) {
         if(modifier.type == 'percent') {
-          finalValue *= modifier.value;
+          value *= modifier.value;
         }
       }
     }
+    return value;
   }
 }

@@ -1,16 +1,91 @@
 
-abstract class BattleEvent {}
+import '../game_object.dart';
 
-class PlayerAttack extends BattleEvent {}
+abstract class BattleEvent {
 
-class DamageTick extends BattleEvent {}
+  String ef();
+}
 
-class AuraTick extends BattleEvent {}
+class Attack extends BattleEvent {
+  Map<String, dynamic> result;
+  GameObject char;
+  GameObject target;
 
-class OnCrit extends BattleEvent {}
+  Attack(this.result, this.char, this.target);
 
-class OnEvade extends BattleEvent {}
+  @override
+  String ef() {
+    char.consumeMP(result['cost']);
+    target.takeDamage(result['damage']);
+    return result['message'];
+  }
+}
 
-class OnTakeDamage extends BattleEvent {}
+class DamageTick extends BattleEvent {
+  @override
+  String ef() {
+    // TODO: implement ef
+    throw UnimplementedError();
+  }
+}
 
-class OnDealDamage extends BattleEvent {}
+class AuraTick extends BattleEvent {
+  @override
+  String ef() {
+    // TODO: implement ef
+    throw UnimplementedError();
+  }
+}
+
+class OnCrit extends BattleEvent {
+  GameObject char;
+
+  OnCrit(this.char);
+
+  @override
+  String ef() {
+    // TODO: implement ef
+    throw UnimplementedError();
+  }
+}
+
+class OnEvade extends BattleEvent {
+  GameObject char;
+
+  OnEvade(this.char);
+
+  @override
+  String ef() {
+    // TODO: implement ef
+    throw UnimplementedError();
+  }
+}
+
+class OnTakeDamage extends BattleEvent {
+  @override
+  String ef() {
+    // TODO: implement ef
+    throw UnimplementedError();
+  }
+}
+
+class OnDealDamage extends BattleEvent {
+  @override
+  String ef() {
+    // TODO: implement ef
+    throw UnimplementedError();
+  }
+}
+
+class NotEnoughMana extends BattleEvent {
+  String result;
+  GameObject char;
+
+  NotEnoughMana(this.result, this.char);
+
+  @override
+  String ef() {
+    char.consumeMP(-(char.maxHP * char.INT * 0.3).toInt());
+    return result;
+  }
+}

@@ -15,7 +15,6 @@ part 'player_state.dart';
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   PlayerBloc() : super(PlayerInitial()) {
     on<PlayerGetPlayerEvent>(_onGetPlayer);
-    on<PlayerStartBattleEvent>(_onStartBattle);
   }
 
   _onGetPlayer(PlayerGetPlayerEvent event, Emitter<PlayerState> emit) async {
@@ -23,12 +22,5 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     final pref = await SharedPreferences.getInstance();
     Player player = await RepositoryModule.playerRepository().getPlayer(pref.getString('uid'));
     emit(PlayerLoaded(player));
-  }
-
-  _onStartBattle(PlayerStartBattleEvent event, Emitter<PlayerState> emit) async {
-    final pref = await SharedPreferences.getInstance();
-    Player player = await RepositoryModule.playerRepository().getPlayer(pref.getString('uid'));
-    final controller = BattleController(player, player);
-    emit(PlayerBattle(player, player, controller));
   }
 }

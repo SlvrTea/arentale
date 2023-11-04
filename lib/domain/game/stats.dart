@@ -19,4 +19,13 @@ class Stats {
     VIT = Stat(map.data()!['baseVIT']),
     SPI = Stat(map.data()!['baseSPI']),
     DEX = Stat(map.data()!['baseDEX']);
+
+  Stats.fromJson(Map<String, dynamic> map):
+    HP = Stat(map['baseHP']),
+    MP = Stat(map['baseMP']),
+    STR = Stat(map['baseSTR']),
+    INT = Stat(map['baseINT']),
+    VIT = Stat(map['baseVIT']),
+    SPI = Stat(map['baseSPI']),
+    DEX = Stat(map['baseDEX']);
 }

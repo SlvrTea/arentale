@@ -8,7 +8,8 @@ class PlayerMapper {
       info: player.info,
       stats: player.stats,
       inventory: player.inventory,
-      equip: player.equip
+      equip: player.equip,
+      skills: player.skills
     );
   }
 }

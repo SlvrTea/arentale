@@ -1,5 +1,5 @@
 
-import 'package:arentale/presentation/home.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:arentale/presentation/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +9,14 @@ class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Arentale Pre Alpha',
+      title: 'Arentale',
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('ru')
+      ],
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(

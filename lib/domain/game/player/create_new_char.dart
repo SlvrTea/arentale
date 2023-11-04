@@ -7,7 +7,7 @@ void createWarrior(String uuid, String name) {
     'class': 'Warrior',
     'name': name,
     'wins': 0,
-    'battles': 0
+    'battles': 1
   };
   Map<String, dynamic> newPlayerStats = {
     'baseHP': 60,
@@ -43,7 +43,7 @@ void createRogue(String uuid, String name) {
     'class': 'Rogue',
     'name': name,
     'wins': 0,
-    'battles': 0
+    'battles': 1
   };
   Map<String, dynamic> newPlayerStats = {
     'baseHP': 40,
@@ -79,7 +79,7 @@ void createMage(String uuid, String name) {
     'class': 'Mage',
     'name': name,
     'wins': 0,
-    'battles': 0
+    'battles': 1
   };
   Map<String, dynamic> newPlayerStats = {
     'baseHP': 35,

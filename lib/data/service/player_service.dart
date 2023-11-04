@@ -9,7 +9,7 @@ class PlayerService extends DBService{
 
   Future<PlayerDB> getPlayer(String uuid) async {
     final snapshot = db.collection(uuid);
-    final allItems = await DBService.getAllItems();
+    final allItems = await DBService().getAllItems();
     final DocumentSnapshot<Map<String, dynamic>> stats = await snapshot.doc('stats').get();
     final DocumentSnapshot<Map<String, dynamic>> inventory = await snapshot.doc('inventory').get();
     final DocumentSnapshot<Map<String, dynamic>> equip = await snapshot.doc('equip').get();
@@ -18,7 +18,8 @@ class PlayerService extends DBService{
       'stats': Stats.fromDocumentSnapshot(stats),
       'inventory': inventory.data(),
       'equip': Equip.fromJson(equip.data()!, allItems),
-      'info': info.data()
+      'info': info.data(),
+      'skills': stats.data()!['skills']
     };
     return PlayerDB.fromDB(playerMap);
   }

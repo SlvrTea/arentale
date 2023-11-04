@@ -7,8 +7,8 @@ class Equip {
   EquipItem armor;
   EquipItem trinket;
 
-  num getStat(String stat) {
-    num statSum = 0;
+  int getStat(String stat) {
+    int statSum = 0;
     switch(stat) {
       case 'STR':
         statSum = rHand.equipSTR + lHand.equipSTR + armor.equipSTR + trinket.equipSTR;
