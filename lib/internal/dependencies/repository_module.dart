@@ -7,11 +7,11 @@ import '../../data/repository/MobDataRepository.dart';
 import '../../domain/repository/mob_repositry.dart';
 
 class RepositoryModule {
-  static PlayerRepository? _playerRepository;
+  static late PlayerRepository _playerRepository;
   static MobRepository? _mobRepository;
 
-  static playerRepository() {
-    _playerRepository ??= PlayerDataRepository(DataBaseModule.dbUtil());
+  static PlayerRepository playerRepository() {
+    _playerRepository = PlayerDataRepository(DataBaseModule.dbUtil());
     return _playerRepository;
   }
 

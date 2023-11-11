@@ -17,6 +17,18 @@ class DBUtils {
     return PlayerMapper.fromDataBase(result);
   }
 
+  Future<void> addExperience(uuid, value) async {
+    _playerService.addExperience(uuid, value);
+  }
+
+  Future<void> addItem(uuid, item, {amount = 1}) async {
+    _playerService.addItem(uuid, item, amount: amount);
+  }
+
+  Future<void> addGold(uuid, value) async {
+    _playerService.addGold(uuid, value);
+  }
+
   Future<Mob> getMob(mobId) async {
     final result = await _mobService.getMob(mobId);
     return MobMapper.fromDatabase(result);

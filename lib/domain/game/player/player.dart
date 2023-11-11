@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:arentale/domain/game/game_object.dart';
 import 'package:arentale/domain/game/stat_modifier.dart';
 
@@ -30,6 +32,7 @@ class Player extends GameObject {
 
   @override
   int get MP => _statMP.finalValue;
+  int get baseMP => stats.MP.finalValue;
   @override
   get maxMP => _statMP.baseValue;
 
@@ -44,6 +47,8 @@ class Player extends GameObject {
   get DEX => stats.DEX.finalValue + (equip.getStat('DEX'));
   // Stat get critChance => Stat(pow(DEX, 0.05) - 1);
   // Stat get critDamage => Stat(1 + pow(DEX, DEX/1000));
+
+  get lForm => (100 * pow(info['level'], 0.8)).round();
 
   @override
   void consumeMP(int value) {
@@ -81,5 +86,9 @@ class Player extends GameObject {
         MATK = equip.getStat('MATK') + (equip.getStat('INT') + stats.INT.finalValue) % 2;
     }
     return MATK;
+  }
+
+  void addExp(int value) async {
+
   }
 }

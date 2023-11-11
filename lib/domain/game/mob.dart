@@ -53,4 +53,16 @@ class Mob extends GameObject {
     final String randSkill = mobSkills[Random().nextInt(mobSkills.length)];
     return randSkill;
   }
+
+  @override
+  List<String> getDrop() {
+    final List<String> drop = [];
+    for (var e in info['drop'].keys) {
+      final rand = Random().nextDouble();
+      if (rand >= info['drop'][e]) {
+        drop.add(e);
+      }
+    }
+    return drop;
+  }
 }

@@ -71,6 +71,10 @@ flutter:
   assets:
     - assets/evasion.jpg
     - assets/sneaky_blow.jpg
+    - assets/poisoned_shot.jpg
+    - assets/intoxication.jpg
+    - assets/swing_and_cut.jpg
+    - assets/toxic_vapor.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

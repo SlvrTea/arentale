@@ -1,11 +1,12 @@
 
-import 'dart:math';
-
 import 'package:arentale/domain/game/game_object.dart';
 import 'package:arentale/domain/state/battle/battle_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:arentale/domain/game/skill.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'home.dart';
 
 class Battle extends StatelessWidget {
   const Battle({super.key});
@@ -32,17 +33,38 @@ class Battle extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: state.player.skills.map((e) => IconButton(
                       onPressed: () {
-                        Skill skill = getSkill(state.player, state.mob, e)!;
-                        skill.cast().forEach((element) {
+                        getSkill(state.player, state.mob, e)!.cast().forEach((element) {
                           state.battleController.loop.events.add(element);
                         });
-
+                        state.mob.effects.forEach((element) {
+                          state.battleController.loop.events.add(element.tick());
+                        });
                         getSkill(state.mob, state.player, state.mob.cast())!.cast().forEach((element) {
                           state.battleController.loop.events.add(element);
                         });
-
                         state.battleController.turn();
                         BlocProvider.of<BattleBloc>(context).add(BattleLogUpdateEvent(state));
+
+                        if (state.mob.HP <= 0) {
+                          final drop = state.mob.getDrop();
+                          final exp = state.mob.info['exp'];
+                          final gold = state.mob.info['gold'];
+                          BlocProvider.of<BattleBloc>(context).add(BattleEndEvent(
+                                drop,
+                                exp,
+                                gold,
+                                '${state.battleController.log}\nПолучено: $drop\nПолучено:$exp опыта\nПолучено:$gold золота'
+                            )
+                          );
+                        } else if (state.player.HP <= 0) {
+                          BlocProvider.of<BattleBloc>(context).add(BattleEndEvent(
+                              const [],
+                              0,
+                              0,
+                              '${state.battleController.log}\nВы проиграли!'
+                            )
+                          );
+                        }
                       },
                       icon: Image.asset(getSkill(state.player, state.mob, e)!.iconPath),
                       tooltip: getSkill(state.player, state.mob, e)!.tooltip,
@@ -51,12 +73,34 @@ class Battle extends StatelessWidget {
                   ),
                 ],
               );
-            } else if (state is BattleLoadingState){
+            }
+            else if (state is BattleLoadingState) {
               return const Center(
                   child: CircularProgressIndicator()
               );
-            } else {
-              BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent('bat'));
+            }
+            else if (state is BattleEndState) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _getBattleLog(state.log, MediaQuery.of(context).size.height * 0.9, MediaQuery.of(context).size.width),
+                  ElevatedButton(
+                      onPressed: () async {
+                        final pref = await SharedPreferences.getInstance();
+                        if (pref.getString('uid') == null) {
+                          return;
+                        }
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (_) => Wrapper(uuid: pref.getString('uid')!))
+                        );
+                      },
+                      child: const Text('Ok')
+                  )
+                ],
+              );
+            }
+            else {
+              BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent('boar'));
               return const Center();
             }
           },

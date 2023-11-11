@@ -35,7 +35,7 @@ class Home extends StatelessWidget {
     return Builder(
       builder: (context) {
         return Scaffold(
-          appBar: AppBar(title: const Text('Arentale Pre Alpha')),
+          appBar: AppBar(title: Text(AppLocalizations.of(context)!.appbar)),
           body: BlocBuilder<NavigationBloc, int>(
             builder: (context, state) {
               return _getBody(context)[state];
@@ -77,22 +77,26 @@ class Home extends StatelessWidget {
     return BlocBuilder<NavigationBloc, int>(
       builder: (context, state) {
         return NavigationBar(
+          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           selectedIndex: state,
           onDestinationSelected: (int index) {
             BlocProvider.of<NavigationBloc>(context).add(
                 NavigationChangeEvent(value: index));
           },
-          destinations: const [
+          destinations: const <Widget>[
             NavigationDestination(
                 icon: Icon(Icons.home),
+                selectedIcon: Icon(Icons.home_outlined),
                 label: 'Home'
             ),
             NavigationDestination(
                 icon: Icon(Icons.map),
+                selectedIcon: Icon(Icons.map_outlined),
                 label: 'Map'
             ),
             NavigationDestination(
-                icon: Icon(Icons.account_circle_outlined),
+                icon: Icon(Icons.account_circle),
+                selectedIcon: Icon(Icons.account_circle_outlined),
                 label: 'Char'
             )
           ],

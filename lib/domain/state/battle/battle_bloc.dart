@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:arentale/data/service/player_service.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +19,7 @@ class BattleBloc extends Bloc<BattleEvent, BattleState> {
   BattleBloc() : super(BattleInitial()) {
     on<BattleLoadingEvent>(_onBattleLoadingEvent);
     on<BattleLogUpdateEvent>(_onBattleLogUpdateEvent);
+    on<BattleEndEvent>(_onBattleEndEvent);
   }
 
   _onBattleLoadingEvent(BattleLoadingEvent event, Emitter emit) async {
@@ -30,5 +33,19 @@ class BattleBloc extends Bloc<BattleEvent, BattleState> {
   _onBattleLogUpdateEvent(BattleLogUpdateEvent event, Emitter emit) {
     emit(BattleLoadingState());
     emit(event.currentState);
+  }
+
+  _onBattleEndEvent(BattleEndEvent event, Emitter emit) async {
+    emit(BattleEndState(event.log));
+    final perf = await SharedPreferences.getInstance();
+    final uuid = perf.getString('uid')!;
+    final playerRepository = RepositoryModule.playerRepository();
+    await playerRepository.addGold(uuid, (event.gold + Random().nextInt((event.gold / 2).round()))).whenComplete(() => playerRepository.addExperience(uuid, (event.exp + Random().nextInt((event.exp / 2).round()))));
+
+    if (event.drop.isNotEmpty) {
+      for (var element in event.drop) {
+        await playerRepository.addItem(uuid, element);
+      }
+    }
   }
 }

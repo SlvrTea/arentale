@@ -16,3 +16,12 @@ class BattleLogUpdateEvent extends BattleEvent {
 
   BattleLogUpdateEvent(this.currentState);
 }
+
+class BattleEndEvent extends BattleEvent {
+  final int exp;
+  final int gold;
+  final List drop;
+  final String log;
+
+  BattleEndEvent(this.drop, this.exp, this.gold, this.log);
+}

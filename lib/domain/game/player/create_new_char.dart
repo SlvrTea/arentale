@@ -4,9 +4,11 @@ void createWarrior(String uuid, String name) {
   Map<String, dynamic> newPlayerInfo = {
     'id': uuid,
     'level': 1,
+    'exp': 0,
+    'gold': 0,
     'class': 'Warrior',
     'name': name,
-    'wins': 0,
+    'wins': 1,
     'battles': 1
   };
   Map<String, dynamic> newPlayerStats = {
@@ -40,9 +42,11 @@ void createRogue(String uuid, String name) {
   Map<String, dynamic> newPlayerInfo = {
     'id': uuid,
     'level': 1,
+    'exp': 0,
+    'gold': 0,
     'class': 'Rogue',
     'name': name,
-    'wins': 0,
+    'wins': 1,
     'battles': 1
   };
   Map<String, dynamic> newPlayerStats = {
@@ -76,9 +80,11 @@ void createMage(String uuid, String name) {
   Map<String, dynamic> newPlayerInfo = {
     'id': uuid,
     'level': 1,
+    'exp': 0,
+    'gold': 0,
     'class': 'Mage',
     'name': name,
-    'wins': 0,
+    'wins': 1,
     'battles': 1
   };
   Map<String, dynamic> newPlayerStats = {

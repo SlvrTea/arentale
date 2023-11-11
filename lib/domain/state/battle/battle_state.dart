@@ -14,3 +14,9 @@ class BattleLoadedState extends BattleState {
 
   BattleLoadedState(this.player, this.mob, this.battleController);
 }
+
+class BattleEndState extends BattleState {
+  final String log;
+
+  BattleEndState(this.log);
+}

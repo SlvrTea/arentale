@@ -26,14 +26,28 @@ class CharInfo extends StatelessWidget {
                     title: Text(state.player.info['name']),
                     subtitle: Text(state.player.info['class']),
                     leading: const CircleAvatar(child: Icon(Icons.account_circle_outlined)),
+                    initiallyExpanded: true,
                     children: [
                       Card(
-                        child: CircularPercentIndicator(
-                          radius: 30,
-                          header: const Text('Win Rate'),
-                          progressColor: Colors.red,
-                          percent: (state.player.info['wins'] / state.player.info['battles']),
-                          center: Text('${((state.player.info['wins'] / state.player.info['battles']) * 100).round()}%'),
+                        child: Row(
+                          children: <Widget>[
+                            const Padding(padding: EdgeInsets.all(7)),
+                            CircularPercentIndicator(
+                              radius: 40,
+                              header: const Text('Win Rate'),
+                              progressColor: Colors.red,
+                              percent: (state.player.info['wins'] / state.player.info['battles']),
+                              center: Text('${((state.player.info['wins'] / state.player.info['battles']) * 100).round()}%'),
+                            ),
+                            const Padding(padding: EdgeInsets.all(7)),
+                            CircularPercentIndicator(
+                                radius: 40,
+                                header: const Text('Experience'),
+                                progressColor: Colors.blue,
+                                percent: (state.player.info['exp'] / state.player.lForm),
+                                center: Text('${((state.player.info['exp'] / state.player.lForm) * 100).round()}%'),
+                            )
+                          ],
                         )
                       ),
                       StatElement(

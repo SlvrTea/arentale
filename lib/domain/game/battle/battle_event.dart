@@ -11,7 +11,7 @@ class Attack extends BattleEvent {
   GameObject char;
   GameObject target;
 
-  Attack(this.result, this.char, this.target);
+  Attack(this.result, {required this.char, required this.target});
 
   @override
   String ef() {
@@ -22,18 +22,22 @@ class Attack extends BattleEvent {
 }
 
 class DamageTick extends BattleEvent {
+  Map<String, dynamic> result;
+  GameObject target;
+
+  DamageTick(this.result, this.target);
+
   @override
   String ef() {
-    // TODO: implement ef
-    throw UnimplementedError();
+    target.takeDamage(result['damage']);
+    return result['message'];
   }
 }
 
 class AuraTick extends BattleEvent {
   @override
   String ef() {
-    // TODO: implement ef
-    throw UnimplementedError();
+    return '';
   }
 }
 
