@@ -30,7 +30,7 @@ class PlayerService extends DBService{
     final playerCollection = db.collection(uuid);
     final DocumentSnapshot<Map<String, dynamic>> info = await playerCollection.doc('info').get();
     final Map<String, dynamic> newInfo = info.data()!;
-    final lForm = (100 * pow(newInfo['level'], 0.8)).round();
+    final lForm = (100 * pow(newInfo['level'], 1.2)).round();
 
     newInfo['exp'] += value;
     playerCollection.doc('info').update({'exp': newInfo['exp']}).then((_) {
@@ -75,7 +75,7 @@ class PlayerService extends DBService{
        'baseDEX': 2
       }
     };
-    final lForm = (100 * pow(newInfo['level'], 0.8)).round();
+    final lForm = (100 * pow(newInfo['level'], 1.2)).round();
 
     newInfo['exp'] = newInfo['exp'] - lForm;
     newInfo['level'] += 1;

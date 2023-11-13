@@ -1,7 +1,11 @@
 
-class StatModifier{
-  final String type;
-  final int value;
+enum ModifierType {
+  flat, percent
+}
 
-  StatModifier(this.value, {this.type = 'flat'});
+class StatModifier{
+  final ModifierType type;
+  final num value;
+
+  const StatModifier(this.value, {this.type = ModifierType.flat});
 }

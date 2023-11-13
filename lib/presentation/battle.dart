@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:arentale/domain/game/game_object.dart';
 import 'package:arentale/domain/state/battle/battle_bloc.dart';
 import 'package:flutter/material.dart';
@@ -47,8 +49,8 @@ class Battle extends StatelessWidget {
 
                         if (state.mob.HP <= 0) {
                           final drop = state.mob.getDrop();
-                          final exp = state.mob.info['exp'];
-                          final gold = state.mob.info['gold'];
+                          final int exp = (state.mob.info['exp'] + Random().nextInt((state.mob.info['exp'] / 2).round()));
+                          final int gold = (state.mob.info['gold'] + Random().nextInt((state.mob.info['exp'] / 2).round()));
                           BlocProvider.of<BattleBloc>(context).add(BattleEndEvent(
                                 drop,
                                 exp,
@@ -66,7 +68,7 @@ class Battle extends StatelessWidget {
                           );
                         }
                       },
-                      icon: Image.asset(getSkill(state.player, state.mob, e)!.iconPath),
+                      icon: Image.asset(getSkill(state.player, state.mob, e)!.iconPath!),
                       tooltip: getSkill(state.player, state.mob, e)!.tooltip,
                       )
                     ).toList()
@@ -100,7 +102,7 @@ class Battle extends StatelessWidget {
               );
             }
             else {
-              BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent('boar'));
+              BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent('bat'));
               return const Center();
             }
           },

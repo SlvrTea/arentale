@@ -6,7 +6,7 @@ abstract class BattleEvent {
   String ef();
 }
 
-class Attack extends BattleEvent {
+class Attack implements BattleEvent {
   Map<String, dynamic> result;
   GameObject char;
   GameObject target;
@@ -21,7 +21,7 @@ class Attack extends BattleEvent {
   }
 }
 
-class DamageTick extends BattleEvent {
+class DamageTick implements BattleEvent {
   Map<String, dynamic> result;
   GameObject target;
 
@@ -34,14 +34,14 @@ class DamageTick extends BattleEvent {
   }
 }
 
-class AuraTick extends BattleEvent {
+class AuraTick implements BattleEvent {
   @override
   String ef() {
     return '';
   }
 }
 
-class OnCrit extends BattleEvent {
+class OnCrit implements BattleEvent {
   GameObject char;
 
   OnCrit(this.char);
@@ -53,7 +53,7 @@ class OnCrit extends BattleEvent {
   }
 }
 
-class OnEvade extends BattleEvent {
+class OnEvade implements BattleEvent {
   GameObject char;
 
   OnEvade(this.char);
@@ -65,7 +65,7 @@ class OnEvade extends BattleEvent {
   }
 }
 
-class OnTakeDamage extends BattleEvent {
+class OnTakeDamage implements BattleEvent {
   @override
   String ef() {
     // TODO: implement ef
@@ -73,7 +73,7 @@ class OnTakeDamage extends BattleEvent {
   }
 }
 
-class OnDealDamage extends BattleEvent {
+class OnDealDamage implements BattleEvent {
   @override
   String ef() {
     // TODO: implement ef
@@ -81,7 +81,7 @@ class OnDealDamage extends BattleEvent {
   }
 }
 
-class NotEnoughMana extends BattleEvent {
+class NotEnoughMana implements BattleEvent {
   String result;
   GameObject char;
 

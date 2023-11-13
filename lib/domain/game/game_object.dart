@@ -4,32 +4,44 @@ import 'dart:math';
 import 'package:arentale/domain/game/effect.dart';
 import 'package:arentale/domain/game/stats.dart';
 
+import 'stat.dart';
+
 abstract class GameObject {
   final Stats stats;
   final Map<String, dynamic> info;
   final List<Effect> effects = [];
+  late Stat _critDamage;
+  late Stat _critChance;
 
   GameObject({
     required this.stats,
     required this.info
-    });
+    }) {
+    _critDamage = Stat((1 + pow(DEX, DEX/1000)));
+    _critChance = Stat((pow(DEX, 0.05) - 1));
+  }
 
-  int get HP => stats.HP.finalValue;
-  int get maxHP => stats.HP.baseValue;
-  int get MP => stats.MP.finalValue;
-  int get baseMP => stats.MP.baseValue;
-  int get maxMP => stats.MP.baseValue;
+  int get HP => stats.HP.finalValue.round();
+  int get maxHP => stats.HP.baseValue.round();
+  int get MP => stats.MP.finalValue.round();
+  int get baseMP => stats.MP.baseValue.round();
+  int get maxMP => stats.MP.baseValue.round();
   int get ATK => getATK();
   int get MATK => getMATK();
 
-  get STR => stats.STR.finalValue;
-  get INT => stats.INT.finalValue;
-  get VIT => stats.VIT.finalValue;
-  get SPI => stats.SPI.finalValue;
-  get DEX => stats.DEX.finalValue;
+  int get STR => stats.STR.finalValue.round();
+  int get INT => stats.INT.finalValue.round();
+  int get VIT => stats.VIT.finalValue.round();
+  int get SPI => stats.SPI.finalValue.round();
+  int get DEX => stats.DEX.finalValue.round();
 
-  // Stat _critDamage = Stat((1 + pow(DEX, DEX/1000))).finalValue;
-  // double get critDamage => ;
+  Stat get critDamage => _critDamage;
+  Stat get critChance => _critChance;
+
+  num get physicalResist => stats.physicalDamageResist.finalValue;
+  num get physicalModifier => stats.physicalDamageModifier.finalValue;
+  num get magicalResist => stats.magicalDamageResist.finalValue;
+  num get magicalModifier => stats.magicalDamageModifier.finalValue;
 
   void takeDamage(int value);
 
@@ -39,12 +51,15 @@ abstract class GameObject {
 
   int getMATK();
 
-  int crit() {
-    return 1;
+  bool isCrit() {
+    if (Random().nextDouble() < critChance.finalValue) {
+      return true;
+    }
+    return false;
   }
 
-  int evade() {
-    return 1;
+  bool isEvade() {
+    return false;
   }
 
   String cast() {
