@@ -1,10 +1,10 @@
 import 'package:arentale/domain/state/player/player_bloc.dart';
 import 'package:arentale/presentation/charInfo.dart';
+import 'package:arentale/presentation/locations/slinsk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../domain/state/navigation_state.dart';
-import 'battle.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../generated/l10n.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key, required this.uuid});
@@ -35,7 +35,7 @@ class Home extends StatelessWidget {
     return Builder(
       builder: (context) {
         return Scaffold(
-          appBar: AppBar(title: Text(AppLocalizations.of(context)!.appbar)),
+          appBar: AppBar(title: Text(S.of(context).appbar)),
           body: BlocBuilder<NavigationBloc, int>(
             builder: (context, state) {
               return _getBody(context)[state];
@@ -57,17 +57,7 @@ class Home extends StatelessWidget {
 
   List<Widget> _getBody(context) {
     return <Widget>[
-      Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const Battle())
-            );
-          },
-          child: const Text('Battle Test'),
-
-        ),
-      ),
+      const Slinsk(),
       const Center(child: Text('Map')),
       const CharInfo()
     ];

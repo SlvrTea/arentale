@@ -40,7 +40,7 @@ class BattleBloc extends Bloc<BattleEvent, BattleState> {
     final perf = await SharedPreferences.getInstance();
     final uuid = perf.getString('uid')!;
     final playerRepository = RepositoryModule.playerRepository();
-    await playerRepository.addGold(uuid, (event.gold + Random().nextInt((event.gold / 2).round()))).whenComplete(() => playerRepository.addExperience(uuid, (event.exp + Random().nextInt((event.exp / 2).round()))));
+    await playerRepository.addGold(uuid, event.gold).whenComplete(() => playerRepository.addExperience(uuid, event.exp));
 
     if (event.drop.isNotEmpty) {
       for (var element in event.drop) {

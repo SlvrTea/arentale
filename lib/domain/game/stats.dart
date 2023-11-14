@@ -10,6 +10,10 @@ class Stats {
   final Stat VIT;
   final Stat SPI;
   final Stat DEX;
+  final Stat physicalDamageResist = Stat(1);
+  final Stat physicalDamageModifier = Stat(1);
+  final Stat magicalDamageResist = Stat(1);
+  final Stat magicalDamageModifier = Stat(1);
 
   Stats.fromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> map):
     HP = Stat(map.data()!['baseHP']),

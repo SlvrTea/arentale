@@ -1,13 +1,18 @@
 
+import 'dart:math';
+
 import 'package:arentale/domain/game/battle/battle_event.dart';
 import 'package:arentale/domain/game/effect.dart';
 import 'package:arentale/domain/game/game_object.dart';
-import 'package:arentale/domain/game/player/player.dart';
+
+enum DamageType {
+  physical, magical
+}
 
 Skill? getSkill(GameObject char, GameObject target, String name) {
   Map<String, Skill> skillMap = {
     'Sneaky blow': SneakyBlow(char: char, target: target),
-    'Evasion': Evasion(char: char, target: target),
+    'Evasion': Evasion(char: char),
     'Poisoned Shot': PoisonedShot(char: char, target: target),
     'Swing And Cut': SwingAndCut(char: char, target: target),
     'bite': Bite(char: char, target: target),
@@ -18,108 +23,149 @@ Skill? getSkill(GameObject char, GameObject target, String name) {
 }
 
 abstract class Skill {
-  GameObject char;
-  GameObject target;
-  String name;
-  String iconPath;
-  String type;
-  String tooltip;
-  late int damage;
-  late int cost;
+  final GameObject char;
+  final String name;
+  final String? iconPath;
+  final String? tooltip;
 
-  Skill({
+  const Skill({
     required this.char,
-    required this.target,
     required this.name,
-    required this.iconPath,
-    required this.tooltip,
+    this.iconPath,
+    this.tooltip
+  });
+
+  int get cost;
+
+  List<BattleEvent> cast();
+}
+
+abstract class DamageSkill extends Skill {
+  final GameObject target;
+  final DamageType type;
+
+  const DamageSkill({
+    required super.char,
+    required this.target,
+    required super.name,
+    super.iconPath,
+    super.tooltip,
     required this.type
   });
 
+  int get damage;
+}
+
+mixin PlayerDamage on DamageSkill {
+  @override
   List<BattleEvent> cast() {
-    if(char.runtimeType == Player) {
-      if(char.MP >= cost) {
-        num crit = char.crit();
-        num evade = target.evade();
-
-        if (evade == 0) {
-          return [
-            Attack(
-              {'damage': 0, 'cost': cost, 'message': '\n🔵$name: уклонение'},
-              char: char,
-              target: target
-            ),
-            OnEvade(target)
-          ];
-        }
-        if (crit > 1) {
-          return [
-            Attack(
-              {'damage': damage, 'cost': cost, 'message': '\n🔵$name: $damage крит'},
-                char: char,
-                target: target
-            ),
-            OnCrit(char)
-          ];
-        }
-        return [
-          Attack(
-            {'damage': damage, 'cost': cost, 'message': '\n🔵$name: $damage'},
-              char: char,
-              target: target
-          )
-        ];
-      } else {
-        return [
-          NotEnoughMana('\nНедостаточно маны!', char)
-        ];
-      }
+    if (cost > char.MP) {
+      return [NotEnoughMana('\n🔵Недостаточно маны!', char)];
+    }
+    bool crit = char.isCrit();
+    bool evade = target.isEvade();
+    int finalDamage;
+    if (type == DamageType.physical) {
+      finalDamage = (damage * target.physicalResist * char.physicalModifier).round();
     } else {
-      if(target.MP >= cost) {
-        num crit = target.crit();
-        num evade = char.evade();
+      finalDamage = (damage * target.magicalResist * char.magicalModifier).round();
+    }
 
-        if (evade == 0) {
-          return [
-            Attack(
-                {'damage': 0, 'cost': cost, 'message': '\n🔴$name: уклонение'},
-                char: char,
-                target: target
-            ),
-            OnEvade(char)
-          ];
-        }
-        if (crit > 1) {
-          return [
-            Attack(
-                {'damage': damage, 'cost': cost, 'message': '\n🔴$name: $damage крит'},
-                char: char,
-                target: target
-            ),
-            OnCrit(target)
-          ];
-        }
-        return [
-          Attack(
-              {'damage': damage, 'cost': cost, 'message': '\n🔴$name: $damage'},
-              char: char,
-              target: target
-          )
-        ];
-      }
+    if (evade) {
+      return [
+        Attack({'damage': 0, 'cost': cost, 'message': '\n🔵$name: уклонение'}, char: char, target: target),
+        OnEvade(target)
+      ];
+    }
+    else if (crit) {
+      return [
+        Attack({'damage': finalDamage, 'cost': cost, 'message': '\n🔵$name: $finalDamage крит'}, char: char, target: target),
+        OnCrit(char)
+      ];
+    }
+    else {
+      return [
+        Attack({'damage': finalDamage, 'cost': cost, 'message': '\n🔵$name: $finalDamage'}, char: char, target: target)
+      ];
+    }
+  }
+}
+
+mixin MobDamage on DamageSkill {
+  @override
+  List<BattleEvent> cast() {
+    if (cost > char.MP) {
+      return [NotEnoughMana('\n🔴Недостаточно маны!', char)];
+    }
+    bool crit = char.isCrit();
+    bool evade = target.isEvade();
+    int finalDamage;
+
+    if (type == DamageType.physical) {
+      finalDamage = (damage * target.physicalResist * char.physicalModifier).round();
+    } else {
+      finalDamage = (damage * target.magicalResist * char.magicalModifier).round();
+    }
+
+    if (evade) {
+      return [
+        Attack({'damage': 0, 'cost': cost, 'message': '\n🔴$name: уклонение'}, char: char, target: target),
+        OnEvade(target)
+      ];
+    }
+    else if (crit) {
+      return [
+        Attack({'damage': finalDamage, 'cost': cost, 'message': '\n🔴$name: $finalDamage крит'}, char: char, target: target),
+        OnCrit(char)
+      ];
+    }
+    else {
+      return [
+        Attack({'damage': finalDamage, 'cost': cost, 'message': '\n🔴$name: $finalDamage'}, char: char, target: target)
+      ];
+    }
+  }
+}
+
+abstract class SelfAuraSkill extends Skill {
+  const SelfAuraSkill({
+    required super.char,
+    required super.name,
+    super.iconPath,
+    super.tooltip
+  });
+}
+
+mixin PlayerSelfAura on SelfAuraSkill {
+  @override
+  List<BattleEvent> cast() {
+    if (cost > char.MP) {
+      return [NotEnoughMana('\n🔵Недостаточно маны!', char)];
     }
     return [];
   }
 }
 
-class SneakyBlow extends Skill {
-  SneakyBlow({
+mixin MobSelfAura on SelfAuraSkill {
+  @override
+  List<BattleEvent> cast() {
+    if (cost > char.MP) {
+      return [NotEnoughMana('\n🔴Недостаточно маны!', char)];
+    }
+    return [];
+  }
+}
+
+//Рога
+
+class SneakyBlow extends DamageSkill with PlayerDamage {
+  const SneakyBlow({
     required super.char,
     required super.target,
     super.name = 'Sneaky Blow',
     super.iconPath = 'assets/sneaky_blow.jpg',
     super.tooltip = 'Test message',
-    super.type = 'Phys'
+    super.type = DamageType.physical
   });
 
   @override
@@ -128,14 +174,14 @@ class SneakyBlow extends Skill {
   int get cost => (7 + char.baseMP * 0.1).round();
 }
 
-class PoisonedShot extends Skill {
-  PoisonedShot({
+class PoisonedShot extends DamageSkill with PlayerDamage {
+  const PoisonedShot({
     required super.char,
     required super.target,
     super.name = 'Poisoned Shot',
     super.iconPath = 'assets/poisoned_shot.jpg',
     super.tooltip = 'Test message',
-    super.type = 'Phys'
+    super.type = DamageType.physical
   });
 
   @override
@@ -150,14 +196,14 @@ class PoisonedShot extends Skill {
   }
 }
 
-class Intoxication extends Skill {
-  Intoxication({
+class Intoxication extends DamageSkill with PlayerDamage {
+  const Intoxication({
     required super.char,
     required super.target,
     super.name = 'Intoxication',
     super.iconPath = 'assets/intoxication.jpg',
     super.tooltip = 'Test message',
-    super.type = 'Phys'
+    super.type = DamageType.physical
   });
 
   @override
@@ -166,18 +212,16 @@ class Intoxication extends Skill {
   int get cost => (15 + char.baseMP * 0.2).round();
 }
 
-class ToxicVapor extends Skill {
-  ToxicVapor({
+class ToxicVapor extends SelfAuraSkill with PlayerSelfAura {
+  final GameObject target;
+  const ToxicVapor({
     required super.char,
-    required super.target,
+    required this.target,
     super.name = 'Toxic Vapor',
     super.iconPath = 'assets/toxic_vapor.jpg',
     super.tooltip = 'Test message',
-    super.type = 'Phys'
   });
 
-  @override
-  int get damage => 0;
   @override
   int get cost => (20 + char.baseMP * 0.15).round();
 
@@ -188,29 +232,28 @@ class ToxicVapor extends Skill {
   }
 }
 
-class Evasion extends Skill {
-  Evasion({
+class Evasion extends SelfAuraSkill with PlayerSelfAura {
+  const Evasion({
     required super.char,
-    required super.target,
     super.name = '',
     super.iconPath = 'assets/evasion.jpg',
     super.tooltip = '',
-    super.type = ''
   });
-  @override
-  int get damage => 0;
+
   @override
   int get cost => 0;
 }
 
-class SwingAndCut extends Skill {
-  SwingAndCut({
+// Воин
+
+class SwingAndCut extends DamageSkill with PlayerDamage {
+  const SwingAndCut({
     required super.char,
     required super.target,
     super.iconPath = 'assets/swing_and_cut.jpg',
     super.tooltip = 'Test tooltip',
     super.name = 'Swing And Cut',
-    super.type = 'phys'
+    super.type = DamageType.physical
   });
 
   @override
@@ -219,14 +262,103 @@ class SwingAndCut extends Skill {
   int get cost => (char.baseMP * 0.1).round();
 }
 
-class Bite extends Skill {
-  Bite({
+class SwiftRush extends SelfAuraSkill with PlayerSelfAura {
+  const SwiftRush({
+    required super.char,
+    super.name = 'Swift Rush',
+    super.iconPath = 'assets/swift_rush.jpg',
+    super.tooltip = ''
+  });
+
+  @override
+  int get cost => (15 + char.baseMP * 0.10).round();
+
+  @override
+  List<BattleEvent> cast() {
+    char.applyEffect(SwiftRushAura(char: char));
+    return super.cast();
+  }
+}
+
+class BladeStrike extends DamageSkill with PlayerDamage {
+  const BladeStrike({
     required super.char,
     required super.target,
-    super.iconPath = '',
-    super.tooltip = '',
+    super.name = 'Blade Strike',
+    super.iconPath = 'assets/blade_strike.jpg',
+    super.type = DamageType.physical
+  });
+
+  @override
+  int get cost => (5 + char.baseMP * 0.07).round();
+
+  @override
+  int get damage => (char.ATK * 0.3).round();
+
+  @override
+  List<BattleEvent> cast() {
+    if (Random().nextDouble() < 0.25) {
+      char.applyEffect(Superiority(char: char));
+    }
+    return super.cast();
+  }
+}
+
+class ShiningBlade extends DamageSkill with PlayerDamage {
+  const ShiningBlade({
+    required super.char,
+    required super.target,
+    super.name = 'Shining Blade',
+    super.type = DamageType.physical,
+    super.iconPath = 'assets/shining_blade.jpg',
+    super.tooltip = ''
+  });
+
+  @override
+  int get cost => (10 + char.baseMP * 0.2).round();
+
+  @override
+  int get damage => (char.ATK * 0.05).round();
+
+  @override
+  List<BattleEvent> cast() {
+    List<BattleEvent> f = [];
+    f.addAll([...super.cast(), ...super.cast(), ...super.cast(), ...super.cast(), ...super.cast(), ...super.cast()]);
+    return f;
+  }
+}
+
+class Guillotine extends DamageSkill with PlayerDamage {
+  Guillotine({
+    required super.char,
+    required super.target,
+    super.name = 'Guillotine',
+    super.type = DamageType.physical
+  });
+
+  @override
+  int get cost => (7 + char.baseMP * 0.20).round();
+
+  @override
+  int get damage {
+    bool hasEffect = false;
+    final baseDamage = char.ATK * 0.25;
+    target.effects.forEach((element) {if (element is Superiority) {hasEffect = true;}});
+    if (hasEffect) {
+      return (baseDamage * char.critDamage.finalValue).round();
+    }
+    return baseDamage.round();
+  }
+}
+
+// Мобы
+
+class Bite extends DamageSkill with MobDamage {
+  const Bite({
+    required super.char,
+    required super.target,
     super.name = 'Bite',
-    super.type = 'phys'
+    super.type = DamageType.physical
   });
 
   @override
@@ -235,14 +367,12 @@ class Bite extends Skill {
   int get cost => (1 + char.baseMP * 0.05).round();
 }
 
-class Stump extends Skill {
-  Stump({
+class Stump extends DamageSkill with MobDamage {
+  const Stump({
     required super.char,
     required super.target,
-    super.iconPath = '',
-    super.tooltip = '',
     super.name = 'Stump',
-    super.type = 'phys'
+    super.type = DamageType.physical
   });
 
   @override
@@ -251,14 +381,12 @@ class Stump extends Skill {
   int get cost => (1 + char.baseMP * 0.05).round();
 }
 
-class Ram extends Skill {
-  Ram({
+class Ram extends DamageSkill with MobDamage {
+  const Ram({
     required super.char,
     required super.target,
-    super.iconPath = '',
-    super.tooltip = '',
     super.name = 'Ram',
-    super.type = 'phys'
+    super.type = DamageType.physical
   });
 
   @override

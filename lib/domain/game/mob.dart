@@ -18,14 +18,14 @@ class Mob extends GameObject {
   }
 
   @override
-  int get HP => _statHP.finalValue;
+  int get HP => _statHP.finalValue.round();
   @override
-  int get maxHP => _statHP.baseValue;
+  int get maxHP => _statHP.baseValue.round();
 
   @override
-  int get MP => _statMP.finalValue;
+  int get MP => _statMP.finalValue.round();
   @override
-  get maxMP => _statMP.baseValue;
+  get maxMP => _statMP.baseValue.round();
 
   @override
   void consumeMP(int value) {
@@ -39,12 +39,12 @@ class Mob extends GameObject {
 
   @override
   int getATK() {
-    return stats.STR.finalValue;
+    return stats.STR.finalValue.round();
   }
 
   @override
   int getMATK() {
-    return stats.INT.finalValue;
+    return stats.INT.finalValue.round();
   }
 
   @override

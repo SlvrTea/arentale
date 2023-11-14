@@ -26,29 +26,27 @@ class Player extends GameObject {
   }
 
   @override
-  int get HP => _statHP.finalValue;
+  int get HP => _statHP.finalValue.round();
   @override
-  int get maxHP => _statHP.baseValue;
+  int get maxHP => _statHP.baseValue.round();
 
   @override
-  int get MP => _statMP.finalValue;
-  int get baseMP => stats.MP.finalValue;
+  int get MP => _statMP.finalValue.round();
+  int get baseMP => stats.MP.finalValue.round();
   @override
-  get maxMP => _statMP.baseValue;
+  get maxMP => _statMP.baseValue.round();
 
   @override
   get ATK => getATK();
   @override
   get MATK => getMATK();
-  get STR => stats.STR.finalValue + (equip.getStat('STR'));
-  get INT => stats.INT.finalValue + (equip.getStat('INT'));
-  get VIT => stats.VIT.finalValue + (equip.getStat('VIT'));
-  get SPI => stats.SPI.finalValue + (equip.getStat('SPI'));
-  get DEX => stats.DEX.finalValue + (equip.getStat('DEX'));
-  // Stat get critChance => Stat(pow(DEX, 0.05) - 1);
-  // Stat get critDamage => Stat(1 + pow(DEX, DEX/1000));
+  get STR => (stats.STR.finalValue + (equip.getStat('STR'))).round();
+  get INT => (stats.INT.finalValue + (equip.getStat('INT'))).round();
+  get VIT => (stats.VIT.finalValue + (equip.getStat('VIT'))).round();
+  get SPI => (stats.SPI.finalValue + (equip.getStat('SPI'))).round();
+  get DEX => (stats.DEX.finalValue + (equip.getStat('DEX'))).round();
 
-  get lForm => (100 * pow(info['level'], 0.8)).round();
+  get lForm => (100 * pow(info['level'], 1.2)).round();
 
   @override
   void consumeMP(int value) {
@@ -62,7 +60,7 @@ class Player extends GameObject {
 
   @override
   int getATK() {
-    int ATK = 0;
+    num ATK = 0;
     switch(info['class']) {
       case 'Warrior':
         ATK = equip.getStat('ATK') + (equip.getStat('STR') + stats.STR.finalValue) * 3;
@@ -71,12 +69,12 @@ class Player extends GameObject {
       case 'Rogue':
         ATK = equip.getStat('ATK') + (equip.getStat('STR') + stats.STR.finalValue) % 2 + (equip.getStat('DEX') + stats.DEX.finalValue) * 2;
     }
-    return ATK;
+    return ATK.round();
   }
 
   @override
   int getMATK() {
-    int MATK =0;
+    num MATK = 0;
     switch(info['class']) {
       case 'Warrior':
         MATK = equip.getStat('MATK') + (equip.getStat('INT') + stats.INT.finalValue) % 3;
@@ -85,10 +83,6 @@ class Player extends GameObject {
       case 'Rogue':
         MATK = equip.getStat('MATK') + (equip.getStat('INT') + stats.INT.finalValue) % 2;
     }
-    return MATK;
-  }
-
-  void addExp(int value) async {
-
+    return MATK.round();
   }
 }

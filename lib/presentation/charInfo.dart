@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import '../generated/l10n.dart';
+
 class CharInfo extends StatelessWidget {
   const CharInfo({super.key});
 
@@ -42,7 +44,7 @@ class CharInfo extends StatelessWidget {
                             const Padding(padding: EdgeInsets.all(7)),
                             CircularPercentIndicator(
                                 radius: 40,
-                                header: const Text('Experience'),
+                                header: Text(S.of(context).experience),
                                 progressColor: Colors.blue,
                                 percent: (state.player.info['exp'] / state.player.lForm),
                                 center: Text('${((state.player.info['exp'] / state.player.lForm) * 100).round()}%'),
@@ -51,39 +53,39 @@ class CharInfo extends StatelessWidget {
                         )
                       ),
                       StatElement(
-                        statName: 'Health',
+                        statName: S.of(context).health,
                         statValue: state.player.HP.toString(),
                       ),
                       StatElement(
-                        statName: 'Mana',
+                        statName: S.of(context).mana,
                         statValue: state.player.MP.toString(),
                       ),
                       StatElement(
-                        statName: 'Attack',
+                        statName: S.of(context).attack,
                         statValue: state.player.ATK.toString(),
                       ),
                       StatElement(
-                        statName: 'Spell Power',
+                        statName: S.of(context).spellPower,
                         statValue: state.player.MATK.toString(),
                       ),
                       StatElement(
-                        statName: 'Strength',
+                        statName: S.of(context).strength,
                         statValue: state.player.STR.toString(),
                       ),
                       StatElement(
-                        statName: 'Intelligence',
+                        statName: S.of(context).intelligence,
                         statValue: state.player.INT.toString(),
                       ),
                       StatElement(
-                        statName: 'Vitality',
+                        statName: S.of(context).vitality,
                         statValue: state.player.VIT.toString(),
                       ),
                       StatElement(
-                        statName: 'Spirit',
+                        statName: S.of(context).spirit,
                         statValue: state.player.SPI.toString(),
                       ),
                       StatElement(
-                        statName: 'Dexterity',
+                        statName: S.of(context).dexterity,
                         statValue: state.player.DEX.toString(),
                       ),
                     ],
