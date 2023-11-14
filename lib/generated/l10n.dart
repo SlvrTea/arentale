@@ -179,6 +179,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Crit Chance`
+  String get critChance {
+    return Intl.message(
+      'Crit Chance',
+      name: 'critChance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Crit Damage`
+  String get critDamage {
+    return Intl.message(
+      'Crit Damage',
+      name: 'critDamage',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

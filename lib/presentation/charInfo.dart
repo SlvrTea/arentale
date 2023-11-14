@@ -32,8 +32,8 @@ class CharInfo extends StatelessWidget {
                     children: [
                       Card(
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            const Padding(padding: EdgeInsets.all(7)),
                             CircularPercentIndicator(
                               radius: 40,
                               header: const Text('Win Rate'),
@@ -41,7 +41,6 @@ class CharInfo extends StatelessWidget {
                               percent: (state.player.info['wins'] / state.player.info['battles']),
                               center: Text('${((state.player.info['wins'] / state.player.info['battles']) * 100).round()}%'),
                             ),
-                            const Padding(padding: EdgeInsets.all(7)),
                             CircularPercentIndicator(
                                 radius: 40,
                                 header: Text(S.of(context).experience),
@@ -88,6 +87,14 @@ class CharInfo extends StatelessWidget {
                         statName: S.of(context).dexterity,
                         statValue: state.player.DEX.toString(),
                       ),
+                      StatElement(
+                          statName: S.of(context).critChance, 
+                          statValue: state.player.critChance.finalValue.toString()
+                      ),
+                      StatElement(
+                          statName: S.of(context).critDamage,
+                          statValue: state.player.critDamage.finalValue.toString()
+                      )
                     ],
                   ),
                 ),

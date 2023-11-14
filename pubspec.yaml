@@ -64,16 +64,21 @@ flutter:
   uses-material-design: true
   generate: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
   assets:
     - assets/evasion.jpg
     - assets/sneaky_blow.jpg
     - assets/poisoned_shot.jpg
     - assets/intoxication.jpg
     - assets/swing_and_cut.jpg
+    - assets/toxic_vapor.jpg
+    - assets/battle_lust.jpg
+    - assets/blade_strike.jpg
+    - assets/bloodletting.jpg
+    - assets/breakthrough.jpg
+    - assets/execution.jpg
+    - assets/shining_blade.jpg
+    - assets/superiority.jpg
+    - assets/swift_rush.jpg
     - assets/toxic_vapor.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see

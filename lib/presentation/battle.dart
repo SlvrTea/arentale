@@ -32,9 +32,12 @@ class Battle extends StatelessWidget {
                   ),
                   _getPlayerTile(state.player),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: state.player.skills.map((e) => IconButton(
                       onPressed: () {
+                        state.player.effects.forEach((element) {
+                          state.battleController.loop.events.add(element.tick());
+                        });
                         getSkill(state.player, state.mob, e)!.cast().forEach((element) {
                           state.battleController.loop.events.add(element);
                         });
@@ -46,7 +49,7 @@ class Battle extends StatelessWidget {
                         });
                         state.battleController.turn();
                         BlocProvider.of<BattleBloc>(context).add(BattleLogUpdateEvent(state));
-
+                        state.player.effects.forEach((element) {print(element.duration);});
                         if (state.mob.HP <= 0) {
                           final drop = state.mob.getDrop();
                           final int exp = (state.mob.info['exp'] + Random().nextInt((state.mob.info['exp'] / 2).round()));
@@ -102,7 +105,7 @@ class Battle extends StatelessWidget {
               );
             }
             else {
-              BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent('bat'));
+              BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent('boar'));
               return const Center();
             }
           },
@@ -124,6 +127,7 @@ class Battle extends StatelessWidget {
       value: (char.MP / char.maxMP),
       minHeight: 7,
       color: Colors.blue,
+      semanticsLabel: '100',
     );
   }
 

@@ -25,6 +25,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "appbar":
             MessageLookupByLibrary.simpleMessage("Arentale Pre Alpha 0.1"),
         "attack": MessageLookupByLibrary.simpleMessage("Attack"),
+        "critChance": MessageLookupByLibrary.simpleMessage("Crit Chance"),
+        "critDamage": MessageLookupByLibrary.simpleMessage("Crit Damage"),
         "dexterity": MessageLookupByLibrary.simpleMessage("Dexterity"),
         "experience": MessageLookupByLibrary.simpleMessage("Experience"),
         "health": MessageLookupByLibrary.simpleMessage("Health"),

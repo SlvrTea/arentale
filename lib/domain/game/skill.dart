@@ -14,7 +14,15 @@ Skill? getSkill(GameObject char, GameObject target, String name) {
     'Sneaky blow': SneakyBlow(char: char, target: target),
     'Evasion': Evasion(char: char),
     'Poisoned Shot': PoisonedShot(char: char, target: target),
+    'Intoxication': Intoxication(char: char, target: target),
+    'Toxic Vapor': ToxicVapor(char: char, target: target),
     'Swing And Cut': SwingAndCut(char: char, target: target),
+    'Swift Rush': SwiftRush(char: char),
+    'Blade Strike': BladeStrike(char: char, target: target),
+    'Shining Blade': ShiningBlade(char: char, target: target),
+    'Guillotine': Guillotine(char: char, target: target),
+    'Breakthrough': Breakthrough(char: char, target: target),
+    'Bloodletting': Bloodletting(char: char),
     'bite': Bite(char: char, target: target),
     'stump': Stump(char: char, target:  target),
     'ram': Ram(char: char, target: target)
@@ -78,6 +86,7 @@ mixin PlayerDamage on DamageSkill {
       ];
     }
     else if (crit) {
+      finalDamage = (char.critDamage.finalValue * finalDamage).round();
       return [
         Attack({'damage': finalDamage, 'cost': cost, 'message': '\n🔵$name: $finalDamage крит'}, char: char, target: target),
         OnCrit(char)
@@ -114,6 +123,7 @@ mixin MobDamage on DamageSkill {
       ];
     }
     else if (crit) {
+      finalDamage = (char.critDamage.finalValue * finalDamage).round();
       return [
         Attack({'damage': finalDamage, 'cost': cost, 'message': '\n🔴$name: $finalDamage крит'}, char: char, target: target),
         OnCrit(char)
@@ -235,7 +245,7 @@ class ToxicVapor extends SelfAuraSkill with PlayerSelfAura {
 class Evasion extends SelfAuraSkill with PlayerSelfAura {
   const Evasion({
     required super.char,
-    super.name = '',
+    super.name = 'Evasion',
     super.iconPath = 'assets/evasion.jpg',
     super.tooltip = '',
   });
@@ -329,10 +339,12 @@ class ShiningBlade extends DamageSkill with PlayerDamage {
 }
 
 class Guillotine extends DamageSkill with PlayerDamage {
-  Guillotine({
+  const Guillotine({
     required super.char,
     required super.target,
     super.name = 'Guillotine',
+    // TODO add guillotine icon
+    super.iconPath = 'assets/toxic_vapor.jpg',
     super.type = DamageType.physical
   });
 
@@ -342,12 +354,63 @@ class Guillotine extends DamageSkill with PlayerDamage {
   @override
   int get damage {
     bool hasEffect = false;
+    Effect? curEffect;
     final baseDamage = char.ATK * 0.25;
-    target.effects.forEach((element) {if (element is Superiority) {hasEffect = true;}});
-    if (hasEffect) {
+    for (var element in char.effects) {
+      if (element is Superiority) {
+        hasEffect = true;
+        curEffect = element;
+        char.effects.remove(curEffect);
+        break;
+      }
+    }
+    if (hasEffect && curEffect != null) {
+      char.effects.remove(curEffect);
       return (baseDamage * char.critDamage.finalValue).round();
     }
     return baseDamage.round();
+  }
+}
+
+class Breakthrough extends DamageSkill with PlayerDamage {
+  const Breakthrough({
+    required super.char,
+    required super.target,
+    super.name = 'Breakthrough',
+    super.type = DamageType.physical,
+    super.iconPath = 'assets/breakthrough.jpg',
+    super.tooltip = ''
+  });
+
+  @override
+  int get cost => (5 + char.baseMP * 0.1).round();
+
+  @override
+  int get damage {
+    num finalDamage = char.ATK * 0.3;
+    if (char.HP < char.maxHP * 0.7) {
+      finalDamage = char.ATK * (char.maxHP / char.HP);
+    }
+    return finalDamage.round();
+  }
+
+}
+
+class Bloodletting extends SelfAuraSkill with PlayerSelfAura {
+  Bloodletting({
+    required super.char,
+    super.name = 'Bloodletting',
+    super.iconPath = 'assets/bloodletting.jpg',
+    super.tooltip = ''
+  });
+
+  @override
+  int get cost => (15 + char.baseMP * 0.05).round();
+
+  @override
+  List<BattleEvent> cast() {
+    char.takeDamage((char.maxHP * 0.1).round());
+    return super.cast();
   }
 }
 
