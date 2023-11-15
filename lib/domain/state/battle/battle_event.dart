@@ -1,12 +1,13 @@
 part of 'battle_bloc.dart';
 
-@immutable
+
 abstract class BattleEvent {}
 
 class BattleLoadingEvent extends BattleEvent {
   String mob;
+  PlayerModel playerModel;
 
-  BattleLoadingEvent(this.mob);
+  BattleLoadingEvent(this.mob, this.playerModel);
 }
 
 class BattleLoadedEvent extends BattleEvent {}
@@ -18,10 +19,7 @@ class BattleLogUpdateEvent extends BattleEvent {
 }
 
 class BattleEndEvent extends BattleEvent {
-  final int exp;
-  final int gold;
-  final List drop;
   final String log;
 
-  BattleEndEvent(this.drop, this.exp, this.gold, this.log);
+  BattleEndEvent(this.log);
 }

@@ -30,6 +30,17 @@ Skill? getSkill(GameObject char, GameObject target, String name) {
   return skillMap[name];
 }
 
+int getEffectStack(String name, GameObject target) {
+  int stack = 0;
+  for (Effect ef in target.effects) {
+    if (ef.name == name) {
+      stack = ef.stack;
+      break;
+    }
+  }
+  return stack;
+}
+
 abstract class Skill {
   final GameObject char;
   final String name;
@@ -456,15 +467,4 @@ class Ram extends DamageSkill with MobDamage {
   int get damage => (char.ATK * 1.5).round();
   @override
   int get cost => (5 + char.baseMP * 0.05).round();
-}
-
-int getEffectStack(String name, GameObject target) {
-  int stack = 0;
-  for (Effect ef in target.effects) {
-    if (ef.name == name) {
-      stack = ef.stack;
-      break;
-    }
-  }
-  return stack;
 }

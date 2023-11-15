@@ -1,4 +1,3 @@
-import 'package:arentale/domain/state/player/player_bloc.dart';
 import 'package:arentale/presentation/charInfo.dart';
 import 'package:arentale/presentation/locations/slinsk.dart';
 import 'package:flutter/material.dart';
@@ -12,16 +11,9 @@ class Wrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<NavigationBloc>(
-              create: (context) => NavigationBloc()
-          ),
-          BlocProvider<PlayerBloc>(
-              create: (context) => PlayerBloc()
-          )
-        ],
-        child: Home(uuid: uuid)
+    return BlocProvider(
+      create: (_) => NavigationBloc(),
+      child: Home(uuid: uuid),
     );
   }
 }
@@ -38,7 +30,7 @@ class Home extends StatelessWidget {
           appBar: AppBar(title: Text(S.of(context).appbar)),
           body: BlocBuilder<NavigationBloc, int>(
             builder: (context, state) {
-              return _getBody(context)[state];
+              return _getBody()[state];
             },
           ),
           bottomNavigationBar: _getNavigationBar(),
@@ -55,7 +47,7 @@ class Home extends StatelessWidget {
     );
   }
 
-  List<Widget> _getBody(context) {
+  List<Widget> _getBody() {
     return <Widget>[
       const Slinsk(),
       const Center(child: Text('Map')),

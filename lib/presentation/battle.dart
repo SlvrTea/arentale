@@ -1,13 +1,13 @@
 
-import 'dart:math';
-
 import 'package:arentale/domain/game/game_object.dart';
 import 'package:arentale/domain/state/battle/battle_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:arentale/domain/game/skill.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../domain/game/player/player.dart';
+import '../domain/player_model.dart';
+import 'battle_button.dart';
 import 'home.dart';
 
 class Battle extends StatelessWidget {
@@ -31,51 +31,7 @@ class Battle extends StatelessWidget {
                       MediaQuery.of(context).size.width
                   ),
                   _getPlayerTile(state.player),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: state.player.skills.map((e) => IconButton(
-                      onPressed: () {
-                        state.player.effects.forEach((element) {
-                          state.battleController.loop.events.add(element.tick());
-                        });
-                        getSkill(state.player, state.mob, e)!.cast().forEach((element) {
-                          state.battleController.loop.events.add(element);
-                        });
-                        state.mob.effects.forEach((element) {
-                          state.battleController.loop.events.add(element.tick());
-                        });
-                        getSkill(state.mob, state.player, state.mob.cast())!.cast().forEach((element) {
-                          state.battleController.loop.events.add(element);
-                        });
-                        state.battleController.turn();
-                        BlocProvider.of<BattleBloc>(context).add(BattleLogUpdateEvent(state));
-                        state.player.effects.forEach((element) {print(element.duration);});
-                        if (state.mob.HP <= 0) {
-                          final drop = state.mob.getDrop();
-                          final int exp = (state.mob.info['exp'] + Random().nextInt((state.mob.info['exp'] / 2).round()));
-                          final int gold = (state.mob.info['gold'] + Random().nextInt((state.mob.info['exp'] / 2).round()));
-                          BlocProvider.of<BattleBloc>(context).add(BattleEndEvent(
-                                drop,
-                                exp,
-                                gold,
-                                '${state.battleController.log}\nПолучено: $drop\nПолучено:$exp опыта\nПолучено:$gold золота'
-                            )
-                          );
-                        } else if (state.player.HP <= 0) {
-                          BlocProvider.of<BattleBloc>(context).add(BattleEndEvent(
-                              const [],
-                              0,
-                              0,
-                              '${state.battleController.log}\nВы проиграли!'
-                            )
-                          );
-                        }
-                      },
-                      icon: Image.asset(getSkill(state.player, state.mob, e)!.iconPath!),
-                      tooltip: getSkill(state.player, state.mob, e)!.tooltip,
-                      )
-                    ).toList()
-                  ),
+                  _getSkillButtons(state.player, state.mob)
                 ],
               );
             }
@@ -105,12 +61,22 @@ class Battle extends StatelessWidget {
               );
             }
             else {
-              BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent('boar'));
+              final playerModel = context.watch<PlayerModel?>();
+              if (playerModel != null) {
+                BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent('boar', playerModel));
+              }
               return const Center();
             }
           },
         ),
       ),
+    );
+  }
+
+  Widget _getSkillButtons(Player player, GameObject mob) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: player.skills.map((e) => BattleButton(skillName: e)).toList()
     );
   }
 
@@ -136,16 +102,11 @@ class Battle extends StatelessWidget {
       child: ListTile(
         title:  Text(enemy.info['name']),
         leading: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 7, bottom: 7)
-            ),
             SizedBox(
               width: 200,
               child: _getHealthBar(enemy),
-            ),
-            const Padding(
-                padding: EdgeInsets.only(top: 7, bottom: 7)
             ),
             SizedBox(
               width: 200,

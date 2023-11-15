@@ -17,8 +17,8 @@ abstract class GameObject {
     required this.stats,
     required this.info
     }) {
-    _critDamage = Stat((1 + pow(DEX, DEX/1000)));
-    _critChance = Stat((pow(DEX, 0.05) - 1));
+    _critDamage = Stat((1 + ((pow(DEX, DEX/1000) * 100).round() / 100)));
+    _critChance = Stat(((pow(DEX, 0.05) - 1) * 100).round() / 100);
   }
 
   int get HP => stats.HP.finalValue.round();
@@ -77,7 +77,7 @@ abstract class GameObject {
     return result;
   }
 
-  List getDrop() {
+  List<String> getDrop() {
     return [];
   }
 

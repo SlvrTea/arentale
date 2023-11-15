@@ -15,6 +15,7 @@ class NewChar extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
                 onPressed: () async {
@@ -51,5 +52,4 @@ class NewChar extends StatelessWidget {
       ),
     );
   }
-
 }

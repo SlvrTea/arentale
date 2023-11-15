@@ -12,21 +12,14 @@ class DBUtils {
 
   DBUtils(this._playerService, this._mobService);
 
-  Future<Player> getPlayer(uuid) async {
-    final result = await _playerService.getPlayer(uuid);
+  Future<Player> getPlayer() async {
+    final result = await _playerService.getPlayer();
     return PlayerMapper.fromDataBase(result);
   }
 
-  Future<void> addExperience(uuid, value) async {
-    _playerService.addExperience(uuid, value);
-  }
 
-  Future<void> addItem(uuid, item, {amount = 1}) async {
-    _playerService.addItem(uuid, item, amount: amount);
-  }
-
-  Future<void> addGold(uuid, value) async {
-    _playerService.addGold(uuid, value);
+  Future<void> updateInfo({required String doc, required String field, required int value, String updateType = 'set'}) async {
+  _playerService.changeInfo(doc: doc, field: field, value: value, updateType: updateType);
   }
 
   Future<Mob> getMob(mobId) async {
