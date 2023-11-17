@@ -12,6 +12,7 @@ abstract class GameObject {
   final List<Effect> effects = [];
   late Stat _critDamage;
   late Stat _critChance;
+  late Stat _evasionChance;
 
   GameObject({
     required this.stats,
@@ -19,6 +20,7 @@ abstract class GameObject {
     }) {
     _critDamage = Stat((1 + ((pow(DEX, DEX/1000) * 100).round() / 100)));
     _critChance = Stat(((pow(DEX, 0.05) - 1) * 100).round() / 100);
+    _evasionChance = Stat(((pow(DEX, DEX/1000) * 100).round() / 100));
   }
 
   int get HP => stats.HP.finalValue.round();
@@ -37,6 +39,7 @@ abstract class GameObject {
 
   Stat get critDamage => _critDamage;
   Stat get critChance => _critChance;
+  Stat get evasionChance => _evasionChance;
 
   num get physicalResist => stats.physicalDamageResist.finalValue;
   num get physicalModifier => stats.physicalDamageModifier.finalValue;
