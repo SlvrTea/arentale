@@ -17,6 +17,7 @@ class Equipment extends StatelessWidget {
     if (playerModel == null) {
       return const Center(child: CircularProgressIndicator());
     }
+
     List<EquipItem> items = [player!.equip.rHand, player.equip.lHand, player.equip.armor, player.equip.trinket];
     return ListView.builder(
       itemCount: items.length,
