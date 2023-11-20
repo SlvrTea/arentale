@@ -210,3 +210,113 @@ class BonecrusherAura extends StatModifierAura {
     char.critChance.removeModifier(modifier);
   }
 }
+
+class EvasionAura extends StatModifierAura {
+  EvasionAura({
+    required super.char,
+    super.modifier = const StatModifier(0.5, type: ModifierType.percent),
+    super.name = 'Evasion',
+    super.tooltip = '',
+    super.iconPath = 'assets/evasion.jpg',
+    super.duration = 3,
+    super.maxStack = 1,
+    super.stack = 1
+  });
+
+  @override
+  void initial() {
+    char.evasionChance.addModifier(modifier);
+  }
+
+  @override
+  void onExpire() {
+    char.evasionChance.removeModifier(modifier);
+  }
+}
+
+class BloodlettingAura extends StatModifierAura {
+  BloodlettingAura({
+    required super.char,
+    super.modifier = const StatModifier(0.05),
+    super.name = 'Bloodletting',
+    super.tooltip = '',
+    super.iconPath = 'assets/bloodletting.jpg',
+    super.duration = 99,
+    super.maxStack = 1,
+    super.stack = 1
+  });
+
+  @override
+  void initial() {
+    char.stats.physicalDamageModifier.addModifier(modifier);
+  }
+
+  @override
+  void onExpire() {
+    char.stats.physicalDamageModifier.removeModifier(modifier);
+  }
+}
+
+// TODO: implement BattleLust
+class BattleLustAura extends StatModifierAura {
+  BattleLustAura({
+    required super.char,
+    super.modifier = const StatModifier(0.1),
+    required super.name,
+    required super.tooltip,
+    required super.iconPath,
+    required super.duration,
+    required super.maxStack,
+    required super.stack
+  });
+
+  @override
+  void initial() {
+    // TODO: implement initial
+  }
+
+  @override
+  void onExpire() {
+    // TODO: implement onExpire
+  }
+
+}
+
+class ExperimentalPotionAura extends StatModifierAura {
+  ExperimentalPotionAura({
+    required super.char,
+    super.modifier = const StatModifier(0.15, type: ModifierType.percent),
+    super.name = 'Experimental Potion',
+    super.tooltip = '',
+    super.iconPath = 'assets/experimental_potion.jpg',
+    super.duration = 5,
+    super.maxStack = 1,
+    super.stack = 1
+  });
+
+  @override
+  void initial() {
+    char.stats.DEX.addModifier(modifier);
+  }
+
+  @override
+  void onExpire() {
+    char.stats.DEX.removeModifier(modifier);
+  }
+}
+
+class Bleed extends DamageOnTickEffect {
+  Bleed({
+    required super.char,
+    required super.target,
+    super.name = 'Bleed',
+    super.tooltip = '',
+    super.iconPath = '', //TODO: add bleed icon
+    super.duration = 3,
+    super.maxStack = 3,
+    super.stack = 1
+  });
+
+  @override
+  int get damage => (char.ATK * 0.2 * stack).round();
+}

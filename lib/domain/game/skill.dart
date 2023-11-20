@@ -177,6 +177,51 @@ mixin MobSelfAura on SelfAuraSkill {
   }
 }
 
+abstract class EffectApply extends Skill {
+  EffectApply({
+    required super.char,
+    required super.name,
+    super.iconPath,
+    super.tooltip
+  });
+}
+
+mixin PlayerEffectApply on EffectApply {
+  @override
+  List<BattleEvent> cast() {
+    if (cost > char.MP) {
+      return [NotEnoughMana('\n🔵Недостаточно маны!', char)];
+    }
+    return [];
+  }
+}
+
+mixin MobEffectApply on EffectApply {
+  @override
+  List<BattleEvent> cast() {
+    if (cost > char.MP) {
+      return [NotEnoughMana('\n🔴Недостаточно маны!', char)];
+    }
+    return [];
+  }
+}
+
+abstract class HealingSkill extends Skill {
+  HealingSkill({
+    required super.char,
+    required super.name,
+    super.iconPath,
+    super.tooltip
+  });
+  int get healing;
+
+  @override
+  List<BattleEvent> cast() {
+    char.takeDamage(-healing);
+    return [];
+  }
+}
+
 //Рога
 
 class SneakyBlow extends DamageSkill with PlayerDamage {
@@ -251,6 +296,70 @@ class ToxicVapor extends SelfAuraSkill with PlayerSelfAura {
     char.applyEffect(ToxicVaporAura(char: char, target: target));
     return super.cast();
   }
+}
+
+class PoisonBomb extends EffectApply with PlayerEffectApply {
+  PoisonBomb({
+    required super.char,
+    super.name = 'Poison Bomb',
+    super.iconPath = '', //TODO: add poison bomb icon
+    super.tooltip = ''
+  });
+
+  @override
+  int get cost => (20 + char.baseMP * 0.25).round();
+}
+
+class ExperimentalPotion extends HealingSkill {
+  ExperimentalPotion({
+    required super.char,
+    required super.name,
+    super.iconPath = 'assets/experimental_potion.jpg',
+    super.tooltip = ''
+  });
+
+  @override
+  int get cost => (25 + char.baseMP * 0.15).round();
+
+  @override
+  int get healing {
+    int baseHealing = ((char.maxHP - char.HP) * 0.2).round();
+    if (baseHealing < char.maxHP * 0.1) {
+      char.applyEffect(ExperimentalPotionAura(char: char));
+    }
+    return baseHealing;
+  }
+}
+
+class Wound extends DamageSkill with PlayerDamage {
+  Wound({
+    required super.char,
+    required super.target,
+    super.name = 'Wound',
+    super.type = DamageType.physical,
+    super.iconPath = '', //TODO: add wound icon
+    super.tooltip = ''
+  });
+
+  @override
+  int get cost => (15 + char.baseMP * 0.1).round();
+
+  @override
+  int get damage => (char.ATK * 0.45).round();
+
+  @override
+  List<BattleEvent> cast() {
+    target.applyEffect(Bleed(char: char, target: target));
+    return super.cast();
+  }
+}
+
+class BloodFountain extends SelfAuraSkill with PlayerSelfAura {
+  BloodFountain({required super.char, required super.name});
+
+  @override
+  // TODO: implement cost
+  int get cost => throw UnimplementedError();
 }
 
 class Evasion extends SelfAuraSkill with PlayerSelfAura {
