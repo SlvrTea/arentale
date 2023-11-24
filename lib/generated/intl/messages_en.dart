@@ -33,7 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "intelligence": MessageLookupByLibrary.simpleMessage("Intelligence"),
         "mana": MessageLookupByLibrary.simpleMessage("Mana"),
         "slinskD1": MessageLookupByLibrary.simpleMessage(
-            "Перед своими глазами вы можете видеть небольшую деревню"),
+            "Это небольшой тестовый квест, сделанный для проверки игровых систем. В дальнейших обновлениях вступление будет переделано."),
+        "slinskO1": MessageLookupByLibrary.simpleMessage("Ок"),
         "spellPower": MessageLookupByLibrary.simpleMessage("Spell Power"),
         "spirit": MessageLookupByLibrary.simpleMessage("Spirit"),
         "strength": MessageLookupByLibrary.simpleMessage("Strength"),

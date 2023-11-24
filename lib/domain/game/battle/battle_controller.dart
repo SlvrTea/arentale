@@ -33,9 +33,8 @@ class BattleController {
         log += '\nПолучено: $drop';
       }
       log += '\nВы победили!';
-    } else if (player.HP <= 0) {
-      log += '\nВы проиграли!';
     }
+    log += '\nВы проиграли!';
   }
 
   void turn(String playerCast) {

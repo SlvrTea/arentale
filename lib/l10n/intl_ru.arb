@@ -1,4 +1,5 @@
-{"appbar": "Arentale Pre Alpha 0.1",
+{
+  "appbar": "Arentale Pre Alpha 0.1",
   "experience": "Опыт",
   "health": "Здоровье",
   "mana": "Мана",
@@ -10,7 +11,8 @@
   "spirit": "Дух",
   "dexterity": "Ловкость",
   "testBattle": "Тестовое сражение",
-  "slinskD1": "Перед своими глазами вы можете видеть небольшую деревню",
+  "slinskD1": "Это небольшой тестовый квест, сделанный для проверки игровых систем. В дальнейших обновлениях вступление будет переделано.",
+  "slinskO1": "Ок",
   "critChance": "Crit Chance",
   "critDamage": "Crit Damage"
 }

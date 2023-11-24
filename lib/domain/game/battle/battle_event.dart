@@ -48,7 +48,6 @@ class OnCrit implements BattleEvent {
 
   @override
   String ef() {
-    // TODO: implement ef
     return '';
   }
 }
@@ -60,8 +59,7 @@ class OnEvade implements BattleEvent {
 
   @override
   String ef() {
-    // TODO: implement ef
-    throw UnimplementedError();
+    return '';
   }
 }
 
