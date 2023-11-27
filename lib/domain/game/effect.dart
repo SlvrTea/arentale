@@ -24,7 +24,7 @@ abstract class Effect implements Duration {
     required this.iconPath,
     required this.duration,
     required this.maxStack,
-    required this.stack
+    this.stack = 1
   });
 
   BattleEvent tick();
@@ -40,7 +40,7 @@ abstract class DamageOnTickEffect extends Effect {
     required super.iconPath,
     required super.duration,
     required super.maxStack,
-    required super.stack
+    super.stack = 1
   });
 
   int get damage;
@@ -71,7 +71,7 @@ abstract class Aura extends Effect {
     required super.iconPath,
     required super.duration,
     required super.maxStack,
-    required super.stack,
+    super.stack = 1
   });
 
   @override
@@ -99,7 +99,7 @@ abstract class StatModifierAura extends Aura {
     required super.iconPath,
     required super.duration,
     required super.maxStack,
-    required super.stack
+    super.stack = 1
   }) {
     initial();
   }
@@ -126,8 +126,7 @@ class Poison extends DamageOnTickEffect {
     super.tooltip = '',
     super.iconPath = '',
     super.duration = 3,
-    super.maxStack = 3,
-    super.stack = 1
+    super.maxStack = 3
   });
 
   @override
@@ -143,8 +142,7 @@ class ToxicVaporAura extends Aura {
     super.tooltip = '',
     super.iconPath = '',
     super.duration = 3,
-    super.maxStack = 1,
-    super.stack = 1
+    super.maxStack = 1
   });
 
   @override
@@ -161,8 +159,7 @@ class Superiority extends Aura {
     super.tooltip = '',
     super.iconPath = 'assets/superiority.jpg',
     super.duration = 99,
-    super.maxStack = 1,
-    super.stack = 1
+    super.maxStack = 1
   });
 }
 
@@ -174,8 +171,7 @@ class SwiftRushAura extends StatModifierAura {
     super.tooltip = '',
     super.iconPath = 'assets/swift_rush.jpg',
     super.duration = 3,
-    super.maxStack = 1,
-    super.stack = 1
+    super.maxStack = 1
   });
 
   @override
@@ -197,8 +193,7 @@ class BonecrusherAura extends StatModifierAura {
     super.tooltip = '',
     super.iconPath = 'assets/swift_rush.jpg',
     super.duration = 99,
-    super.maxStack = 15,
-    super.stack = 1
+    super.maxStack = 15
   });
 
   @override
@@ -220,8 +215,7 @@ class EvasionAura extends StatModifierAura {
     super.tooltip = '',
     super.iconPath = 'assets/evasion.jpg',
     super.duration = 3,
-    super.maxStack = 1,
-    super.stack = 1
+    super.maxStack = 1
   });
 
   @override
@@ -291,8 +285,7 @@ class ExperimentalPotionAura extends StatModifierAura {
     super.tooltip = '',
     super.iconPath = 'assets/experimental_potion.jpg',
     super.duration = 5,
-    super.maxStack = 1,
-    super.stack = 1
+    super.maxStack = 1
   });
 
   @override
@@ -314,8 +307,7 @@ class Bleed extends DamageOnTickEffect {
     super.tooltip = '',
     super.iconPath = '', //TODO: add bleed icon
     super.duration = 3,
-    super.maxStack = 3,
-    super.stack = 1
+    super.maxStack = 3
   });
 
   @override

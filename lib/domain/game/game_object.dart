@@ -18,9 +18,9 @@ abstract class GameObject {
     required this.stats,
     required this.info
     }) {
-    _critDamage = Stat((1 + ((pow(DEX, DEX/1000) * 100).round() / 100)));
+    _critDamage = Stat((0.5 + ((pow(DEX, DEX/1000) * 100).round() / 100)));
     _critChance = Stat(((pow(DEX, 0.05) - 1) * 100).round() / 100);
-    _evasionChance = Stat(((pow(DEX, DEX/1000) * 100).round() / 100));
+    _evasionChance = Stat(((pow(DEX, DEX/1000) * 100).round() / 100) - 1);
   }
 
   int get HP => stats.HP.finalValue.round();
@@ -62,6 +62,9 @@ abstract class GameObject {
   }
 
   bool isEvade() {
+    if (Random().nextDouble() < evasionChance.finalValue) {
+      return true;
+    }
     return false;
   }
 
@@ -92,9 +95,8 @@ abstract class GameObject {
         if (element.stack + 1 <= element.maxStack) {
           element.stack += 1;
           return;
-        } else {
-          return;
         }
+        return;
       }
     });
     if (apply) {

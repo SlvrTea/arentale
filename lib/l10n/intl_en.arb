@@ -11,7 +11,8 @@
   "spirit": "Spirit",
   "dexterity": "Dexterity",
   "testBattle": "Test Battle",
-  "slinskD1": "Перед своими глазами вы можете видеть небольшую деревню",
+  "slinskD1": "Это небольшой тестовый квест, сделанный для проверки игровых систем. В дальнейших обновлениях вступление будет переделано.",
+  "slinskO1": "Ок",
   "critChance": "Crit Chance",
   "critDamage": "Crit Damage"
 }

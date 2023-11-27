@@ -1,4 +1,5 @@
 import 'package:arentale/presentation/charInfo.dart';
+import 'package:arentale/presentation/equip_screen.dart';
 import 'package:arentale/presentation/locations/slinsk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,7 +52,8 @@ class Home extends StatelessWidget {
     return <Widget>[
       const Slinsk(),
       const Center(child: Text('Map')),
-      const CharInfo()
+      const CharInfo(),
+      const EquipScreen()
     ];
   }
 
@@ -80,6 +82,11 @@ class Home extends StatelessWidget {
                 icon: Icon(Icons.account_circle),
                 selectedIcon: Icon(Icons.account_circle_outlined),
                 label: 'Char'
+            ),
+            NavigationDestination(
+                icon: Icon(Icons.shopping_bag),
+                selectedIcon: Icon(Icons.shopping_bag_outlined),
+                label: 'Equip'
             )
           ],
         );

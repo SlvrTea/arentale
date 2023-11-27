@@ -1,29 +1,59 @@
 
+import 'package:arentale/presentation/dialog_option.dart';
 import 'package:flutter/material.dart';
 
 class GameDialog extends StatefulWidget {
-  List<Widget> options;
-  String dialog;
+  final Map dialogTree;
 
-  GameDialog({required this.options, required this.dialog, super.key});
+  const GameDialog({required this.dialogTree, super.key});
 
   @override
   State<GameDialog> createState() => _GameDialogState();
 }
 
 class _GameDialogState extends State<GameDialog> {
+  late String dialog;
+  late List options;
+
+  void pushDialog(String dialogID) {
+    setState(() {
+      buildDialog(dialogID);
+    });
+  }
+
+  void buildDialog(String dialogID) {
+    dialog = widget.dialogTree[dialogID]['msg'];
+    options = widget.dialogTree[dialogID]['options'].keys.map((e) => DialogOption(
+        option: widget.dialogTree[dialogID]['options'][e]['msg'],
+        result: () {
+          pushDialog(widget.dialogTree[dialogID]['options'][e]['goto']);
+        }
+    )).toList();
+  }
+
+  @override
+  void initState() {
+    buildDialog('d1');
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _getDialog(widget.dialog, MediaQuery.of(context).size.height * 0.7, MediaQuery.of(context).size.width),
-        ...widget.options
-      ],
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _getDialog(dialog, MediaQuery.of(context).size.height * 0.65, MediaQuery.of(context).size.width),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [...options],
+          )
+        ],
+      ),
     );
   }
 
-  Widget _getDialog(String dialog,double height, double width) {
+  Widget _getDialog(String dialog, double height, double width) {
     return SizedBox(
       height: height,
       width: width,
@@ -36,12 +66,5 @@ class _GameDialogState extends State<GameDialog> {
         ),
       ),
     );
-  }
-
-  void push(String dialog, List<Widget> options) {
-    setState(() {
-      widget.options = options;
-      widget.dialog = dialog;
-    });
   }
 }

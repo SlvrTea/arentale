@@ -112,6 +112,12 @@ class Battle extends StatelessWidget {
               width: 200,
               child: _getManaBar(enemy),
             ),
+            SizedBox(
+              width: 200,
+              child: Row(
+                children: enemy.effects.map((e) => Image.asset(e.iconPath)).toList()
+              ),
+            )
           ],
         ),
         trailing: const CircleAvatar(
@@ -129,21 +135,22 @@ class Battle extends StatelessWidget {
         ),
         title: Text(player.info['name']),
         trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const Padding(
-                padding: EdgeInsets.only(top: 7, bottom: 7)
-            ),
             SizedBox(
               width: 200,
               child: _getHealthBar(player),
-            ),
-            const Padding(
-                padding: EdgeInsets.only(top: 7, bottom: 7)
             ),
             SizedBox(
               width: 200,
               child: _getManaBar(player),
             ),
+            SizedBox(
+              width: 200,
+              child: Row(
+                  children: player.effects.map((e) => Image.asset(e.iconPath)).toList()
+              ),
+            )
           ],
         ),
       ),
