@@ -534,6 +534,28 @@ class Bloodletting extends SelfAuraSkill with PlayerSelfAura {
   }
 }
 
+class Execution extends DamageSkill with PlayerDamage {
+  Execution({
+    required super.char,
+    required super.target,
+    super.name = 'Execution',
+    super.type = DamageType.physical,
+    super.iconPath = 'assets/execution.jpg',
+    super.tooltip = ''
+  });
+
+  @override
+  int get cost => 0;
+
+  @override
+  int get damage {
+    int baseDamage = 0;
+    if (target.HP <= target.maxHP * 0.25) {
+      baseDamage = (char.ATK * 0.75).round();
+    }
+    return baseDamage;
+  }
+}
 // Мобы
 
 class Bite extends DamageSkill with MobDamage {
