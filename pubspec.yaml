@@ -41,6 +41,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   provider: ^6.1.1
+  info_popup: ^4.3.1
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +82,7 @@ flutter:
     - assets/superiority.jpg
     - assets/swift_rush.jpg
     - assets/toxic_vapor.jpg
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -65,7 +65,7 @@ class LoginScreen extends StatelessWidget {
               return;
             }
             Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => Wrapper(uuid: pref.getString('uid')!))
+                MaterialPageRoute(builder: (_) => const Home())
             );
           },
           child: const Text('Continue'),

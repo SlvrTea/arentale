@@ -1,7 +1,6 @@
 
 import 'package:arentale/domain/game/player/create_new_char.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home.dart';
 
@@ -18,31 +17,28 @@ class NewChar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-                onPressed: () async {
-                  final pref = await SharedPreferences.getInstance();
+                onPressed: () {
                   createWarrior(uuid, name);
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => Wrapper(uuid: pref.getString('uid')!))
+                      MaterialPageRoute(builder: (_) => const Home())
                   );
                 },
                 child: const Text('Warrior')
             ),
             ElevatedButton(
-                onPressed: () async {
-                  final pref = await SharedPreferences.getInstance();
+                onPressed: () {
                   createRogue(uuid, name);
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => Wrapper(uuid: pref.getString('uid')!))
+                      MaterialPageRoute(builder: (_) => const Home())
                   );
                 },
                 child: const Text('Rogue')
             ),
             ElevatedButton(
-                onPressed: () async {
-                  final pref = await SharedPreferences.getInstance();
+                onPressed: () {
                   createMage(uuid, name);
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => Wrapper(uuid: pref.getString('uid')!))
+                      MaterialPageRoute(builder: (_) => const Home())
                   );
                 },
                 child: const Text('Mage')

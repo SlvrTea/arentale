@@ -1,13 +1,16 @@
 
 import 'package:arentale/data/service/database_service.dart';
-import 'package:arentale/domain/game/player/equip.dart';
+import 'package:arentale/domain/game/game_entities/equip.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../domain/game/stats.dart';
+import '../../domain/game/game_entities/stats.dart';
 import '../player_db.dart';
 
-class PlayerService extends DBService {
+enum DataUpdateType {
+  set, add
+}
 
+class PlayerService extends DBService {
   Future<PlayerDB> getPlayer() async {
     final pref = await SharedPreferences.getInstance();
     final String uuid = pref.getString('uid')!;
@@ -27,7 +30,7 @@ class PlayerService extends DBService {
     return PlayerDB.fromDB(playerMap);
   }
 
-  void changeInfo({required String doc, required String field, required int value, String updateType = 'set'}) async {
+  void changeInfo({required String doc, required String field, required dynamic value, DataUpdateType updateType = DataUpdateType.set}) async {
     final pref = await SharedPreferences.getInstance();
     final uuid = pref.getString('uid')!;
     final playerCollection = db.collection(uuid);
@@ -36,15 +39,24 @@ class PlayerService extends DBService {
 
     try {
       snapshot = await playerCollection.doc(doc).get();
-      if (updateType == 'add') {
+      if ((updateType == DataUpdateType.add) && (value is int)) {
         data = snapshot.data()![field];
         data += value;
+        playerCollection.doc(doc).update({field: data});
         return;
       }
       playerCollection.doc(doc).update({field: value});
     } catch(e) {
-      rethrow;
+      throw Exception('Incorrect data try to check db path or given value\n$e');
     }
+  }
+
+  Future<void> changeLocation(String location) async {
+    changeInfo(
+        doc: 'info',
+        field: 'location',
+        value: location
+    );
   }
 
   static createPlayer({

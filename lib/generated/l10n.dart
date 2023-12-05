@@ -209,6 +209,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Stats`
+  String get statsTitle {
+    return Intl.message(
+      'Stats',
+      name: 'statsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Info`
+  String get infoTitle {
+    return Intl.message(
+      'Info',
+      name: 'infoTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Level`
+  String get level {
+    return Intl.message(
+      'Level',
+      name: 'level',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gold`
+  String get gold {
+    return Intl.message(
+      'Gold',
+      name: 'gold',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Slots`
+  String get slots {
+    return Intl.message(
+      'Slots',
+      name: 'slots',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type`
+  String get type {
+    return Intl.message(
+      'Type',
+      name: 'type',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

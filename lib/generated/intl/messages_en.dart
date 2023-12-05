@@ -29,16 +29,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "critDamage": MessageLookupByLibrary.simpleMessage("Crit Damage"),
         "dexterity": MessageLookupByLibrary.simpleMessage("Dexterity"),
         "experience": MessageLookupByLibrary.simpleMessage("Experience"),
+        "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "health": MessageLookupByLibrary.simpleMessage("Health"),
+        "infoTitle": MessageLookupByLibrary.simpleMessage("Info"),
         "intelligence": MessageLookupByLibrary.simpleMessage("Intelligence"),
+        "level": MessageLookupByLibrary.simpleMessage("Level"),
         "mana": MessageLookupByLibrary.simpleMessage("Mana"),
         "slinskD1": MessageLookupByLibrary.simpleMessage(
             "Это небольшой тестовый квест, сделанный для проверки игровых систем. В дальнейших обновлениях вступление будет переделано."),
         "slinskO1": MessageLookupByLibrary.simpleMessage("Ок"),
+        "slots": MessageLookupByLibrary.simpleMessage("Slots"),
         "spellPower": MessageLookupByLibrary.simpleMessage("Spell Power"),
         "spirit": MessageLookupByLibrary.simpleMessage("Spirit"),
+        "statsTitle": MessageLookupByLibrary.simpleMessage("Stats"),
         "strength": MessageLookupByLibrary.simpleMessage("Strength"),
         "testBattle": MessageLookupByLibrary.simpleMessage("Test Battle"),
+        "type": MessageLookupByLibrary.simpleMessage("Type"),
         "vitality": MessageLookupByLibrary.simpleMessage("Vitality")
       };
 }

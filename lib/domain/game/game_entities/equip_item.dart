@@ -1,6 +1,8 @@
 
 class EquipItem {
   final String equipName;
+  final List slots;
+  final String equipType;
   final int equipATK;
   final int equipMATK;
   final int equipSTR;
@@ -11,6 +13,8 @@ class EquipItem {
 
   EquipItem.fromJson(Map<String, dynamic> json, String name):
         equipName = json[name]['name'],
+        slots = json[name]['slot'],
+        equipType= json[name]['type'],
         equipATK = json[name]['equipATK'],
         equipMATK = json[name]['equipMATK'],
         equipSTR = json[name]['equipSTR'],

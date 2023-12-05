@@ -9,7 +9,24 @@ void createWarrior(String uuid, String name) {
     'class': 'Warrior',
     'name': name,
     'wins': 1,
-    'battles': 1
+    'battles': 1,
+    'quest complete': 0,
+    'weapon types': [
+      '1h sword',
+      '2h sword',
+      '1h axe',
+      '2h axe',
+      'dagger',
+      '1h blunt',
+      '2h blunt',
+      'shield'
+    ],
+    'armor types': [
+      'cloth',
+      'leather',
+      'mail',
+      'plate'
+    ]
   };
   Map<String, dynamic> newPlayerStats = {
     'baseHP': 60,
@@ -47,7 +64,18 @@ void createRogue(String uuid, String name) {
     'class': 'Rogue',
     'name': name,
     'wins': 1,
-    'battles': 1
+    'battles': 1,
+    'quest complete': 0,
+    'weapon types': [
+      'dagger',
+      '1h sword',
+      '1h axe',
+      '1h blunt'
+    ],
+    'armor types': [
+      'cloth',
+      'leather'
+    ]
   };
   Map<String, dynamic> newPlayerStats = {
     'baseHP': 40,
@@ -85,7 +113,15 @@ void createMage(String uuid, String name) {
     'class': 'Mage',
     'name': name,
     'wins': 1,
-    'battles': 1
+    'battles': 1,
+    'quest complete': 0,
+    'weapon types': [
+      '1h staff',
+      '2h staff'
+    ],
+    'armor types': [
+      'cloth'
+    ]
   };
   Map<String, dynamic> newPlayerStats = {
     'baseHP': 35,

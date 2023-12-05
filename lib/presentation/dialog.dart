@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 class GameDialog extends StatefulWidget {
   final Map dialogTree;
+  final String initDialog;
 
-  const GameDialog({required this.dialogTree, super.key});
+  const GameDialog({super.key, required this.dialogTree, required this.initDialog});
 
   @override
   State<GameDialog> createState() => _GameDialogState();
@@ -26,14 +27,19 @@ class _GameDialogState extends State<GameDialog> {
     options = widget.dialogTree[dialogID]['options'].keys.map((e) => DialogOption(
         option: widget.dialogTree[dialogID]['options'][e]['msg'],
         result: () {
-          pushDialog(widget.dialogTree[dialogID]['options'][e]['goto']);
+          if (widget.dialogTree[dialogID]['options'][e].containsKey('onSelect')) {
+            widget.dialogTree[dialogID]['options'][e]['onSelect'].forEach((e) => e());
+          }
+          if (widget.dialogTree[dialogID]['options'][e].containsKey('goto')) {
+            pushDialog(widget.dialogTree[dialogID]['options'][e]['goto']);
+          }
         }
     )).toList();
   }
 
   @override
   void initState() {
-    buildDialog('d1');
+    buildDialog(widget.initDialog);
     super.initState();
   }
 
@@ -44,10 +50,15 @@ class _GameDialogState extends State<GameDialog> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _getDialog(dialog, MediaQuery.of(context).size.height * 0.65, MediaQuery.of(context).size.width),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [...options],
-          )
+          SizedBox(
+            height: 100,
+            child: Card(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [...options],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -61,7 +72,10 @@ class _GameDialogState extends State<GameDialog> {
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(dialog),
+            child: Text(
+              dialog,
+              style: const TextStyle(fontSize: 16)
+            ),
           ),
         ),
       ),

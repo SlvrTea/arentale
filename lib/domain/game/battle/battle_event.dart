@@ -1,8 +1,7 @@
 
-import '../game_object.dart';
+import '../game_entities/game_object.dart';
 
 abstract class BattleEvent {
-
   String ef();
 }
 

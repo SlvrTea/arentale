@@ -1,6 +1,6 @@
 
-import 'package:arentale/domain/game/effect.dart';
-import 'package:arentale/domain/game/game_object.dart';
+import 'package:arentale/domain/game/game_entities/effect.dart';
+import 'package:arentale/domain/game/game_entities/game_object.dart';
 
 abstract class OnEvent {
   final GameObject char;

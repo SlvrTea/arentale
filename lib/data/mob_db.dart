@@ -1,7 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../domain/game/stats.dart';
+import '../domain/game/game_entities/stats.dart';
 
 class MobDB {
   final Stats stats;

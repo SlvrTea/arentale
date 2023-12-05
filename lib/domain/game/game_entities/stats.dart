@@ -1,5 +1,5 @@
 
-import 'package:arentale/domain/game/stat.dart';
+import 'package:arentale/domain/game/game_entities/stat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Stats {

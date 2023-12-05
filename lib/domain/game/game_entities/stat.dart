@@ -1,9 +1,9 @@
-import 'package:arentale/domain/game/stat_modifier.dart';
+import 'package:arentale/domain/game/game_entities/stat_modifier.dart';
 
 class Stat {
   final num baseValue;
   num get finalValue => _getFinalValue();
-  List<StatModifier> modifiers = [];
+  final List<StatModifier> modifiers = [];
 
   Stat(this.baseValue);
 

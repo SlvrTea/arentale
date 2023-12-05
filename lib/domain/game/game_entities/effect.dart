@@ -1,8 +1,7 @@
 
 import 'package:arentale/domain/game/battle/battle_event.dart';
-import 'package:arentale/domain/game/game_object.dart';
-import 'package:arentale/domain/game/stat_modifier.dart';
-import 'package:arentale/generated/l10n.dart';
+import 'package:arentale/domain/game/game_entities/game_object.dart';
+import 'package:arentale/domain/game/game_entities/stat_modifier.dart';
 
 abstract class Duration {
   void _decreaseDuration();
@@ -113,7 +112,6 @@ abstract class StatModifierAura extends Aura {
     duration -= 1;
     if (duration <= 0) {
       onExpire();
-      char.effects.remove(this);
     }
   }
 }
@@ -123,8 +121,8 @@ class Poison extends DamageOnTickEffect {
     required super.char,
     required super.target,
     super.name = 'Poison',
-    super.tooltip = '',
-    super.iconPath = '',
+    super.tooltip = 'Каждый ход наносит урон, равный 20% от силы атаки',
+    super.iconPath = 'assets/poison.jpg',
     super.duration = 3,
     super.maxStack = 3
   });
@@ -140,7 +138,7 @@ class ToxicVaporAura extends Aura {
     required this.target,
     super.name = 'Toxic vapor',
     super.tooltip = '',
-    super.iconPath = '',
+    super.iconPath = 'assets/toxic_vapor.jpg',
     super.duration = 3,
     super.maxStack = 1
   });
@@ -149,6 +147,110 @@ class ToxicVaporAura extends Aura {
   BattleEvent tick() {
     target.applyEffect(Poison(char: char, target: target));
     return super.tick();
+  }
+}
+
+class PoisonBombAura extends StatModifierAura {
+  PoisonBombAura({
+    required super.char,
+    super.modifier = const StatModifier(-0.20),
+    super.name = 'Poison Bomb',
+    super.tooltip = '',
+    super.iconPath = 'assets/poison_bomb.jpg',
+    super.duration = 4,
+    super.maxStack = 1
+  });
+
+  @override
+  void initial() {
+    char.stats.physicalDamageResist.addModifier(modifier);
+  }
+
+  @override
+  void onExpire() {
+    char.stats.physicalDamageResist.removeModifier(modifier);
+  }
+}
+
+class ExperimentalPotionAura extends StatModifierAura {
+  ExperimentalPotionAura({
+    required super.char,
+    super.modifier = const StatModifier(0.15, type: ModifierType.percent),
+    super.name = 'Experimental Potion',
+    super.tooltip = '',
+    super.iconPath = 'assets/experimental_potion.jpg',
+    super.duration = 5,
+    super.maxStack = 1
+  });
+
+  @override
+  void initial() {
+    char.stats.DEX.addModifier(modifier);
+  }
+
+  @override
+  void onExpire() {
+    char.stats.DEX.removeModifier(modifier);
+  }
+}
+
+class Bleed extends DamageOnTickEffect {
+  Bleed({
+    required super.char,
+    required super.target,
+    super.name = 'Bleed',
+    super.tooltip = '',
+    super.iconPath = '', //TODO: add bleed icon
+    super.duration = 3,
+    super.maxStack = 3
+  });
+
+  @override
+  int get damage => (char.ATK * 0.2 * stack).round();
+}
+
+class BloodFountainAura extends StatModifierAura {
+  late double value;
+  BloodFountainAura({
+    required super.char,
+    required super.modifier,
+    super.name = 'Blood Fountain',
+    super.tooltip = '',
+    super.iconPath = '',
+    super.duration = 4,
+    super.maxStack = 1
+  });
+
+  @override
+  void initial() {
+    char.stats.STR.addModifier(modifier);
+  }
+
+  @override
+  void onExpire() {
+    char.stats.STR.removeModifier(modifier);
+  }
+}
+
+class ReapAura extends StatModifierAura {
+  ReapAura({
+    required super.char,
+    required super.modifier,
+    super.name = 'Reap',
+    super.tooltip = '',
+    super.iconPath = '',
+    super.duration = 5,
+    super.maxStack = 1
+  });
+
+  @override
+  void initial() {
+    char.stats.physicalDamageModifier.addModifier(modifier);
+  }
+
+  @override
+  void onExpire() {
+    char.stats.physicalDamageModifier.removeModifier(modifier);
   }
 }
 
@@ -168,7 +270,7 @@ class SwiftRushAura extends StatModifierAura {
     required super.char,
     super.modifier = const StatModifier(0.15),
     super.name = 'Swift Rush',
-    super.tooltip = '',
+    super.tooltip = 'Повышает крит шанс на 15%',
     super.iconPath = 'assets/swift_rush.jpg',
     super.duration = 3,
     super.maxStack = 1
@@ -275,41 +377,4 @@ class BattleLustAura extends StatModifierAura {
     // TODO: implement onExpire
   }
 
-}
-
-class ExperimentalPotionAura extends StatModifierAura {
-  ExperimentalPotionAura({
-    required super.char,
-    super.modifier = const StatModifier(0.15, type: ModifierType.percent),
-    super.name = 'Experimental Potion',
-    super.tooltip = '',
-    super.iconPath = 'assets/experimental_potion.jpg',
-    super.duration = 5,
-    super.maxStack = 1
-  });
-
-  @override
-  void initial() {
-    char.stats.DEX.addModifier(modifier);
-  }
-
-  @override
-  void onExpire() {
-    char.stats.DEX.removeModifier(modifier);
-  }
-}
-
-class Bleed extends DamageOnTickEffect {
-  Bleed({
-    required super.char,
-    required super.target,
-    super.name = 'Bleed',
-    super.tooltip = '',
-    super.iconPath = '', //TODO: add bleed icon
-    super.duration = 3,
-    super.maxStack = 3
-  });
-
-  @override
-  int get damage => (char.ATK * 0.2 * stack).round();
 }

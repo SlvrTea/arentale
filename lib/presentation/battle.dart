@@ -1,17 +1,19 @@
 
-import 'package:arentale/domain/game/game_object.dart';
+import 'dart:math';
+
+import 'package:arentale/domain/game/game_entities/game_object.dart';
 import 'package:arentale/domain/state/battle/battle_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:info_popup/info_popup.dart';
 import '../domain/game/player/player.dart';
 import '../domain/player_model.dart';
 import 'battle_button.dart';
 import 'home.dart';
 
 class Battle extends StatelessWidget {
-  const Battle({super.key});
+  final List<String> mobs;
+  const Battle({super.key, required this.mobs});
 
   @override
   Widget build(BuildContext context) {
@@ -41,18 +43,17 @@ class Battle extends StatelessWidget {
               );
             }
             else if (state is BattleEndState) {
+              final playerModel = context.watch<PlayerModel?>();
+
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _getBattleLog(state.log, MediaQuery.of(context).size.height * 0.9, MediaQuery.of(context).size.width),
                   ElevatedButton(
-                      onPressed: () async {
-                        final pref = await SharedPreferences.getInstance();
-                        if (pref.getString('uid') == null) {
-                          return;
-                        }
+                      onPressed: () {
+                        playerModel!.markAsNeededToUpdate();
                         Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (_) => Wrapper(uuid: pref.getString('uid')!))
+                            MaterialPageRoute(builder: (_) => const Home())
                         );
                       },
                       child: const Text('Ok')
@@ -63,7 +64,7 @@ class Battle extends StatelessWidget {
             else {
               final playerModel = context.watch<PlayerModel?>();
               if (playerModel != null) {
-                BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent('boar', playerModel));
+                BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent(mobs[Random().nextInt(mobs.length)], playerModel));
               }
               return const Center();
             }
@@ -74,9 +75,11 @@ class Battle extends StatelessWidget {
   }
 
   Widget _getSkillButtons(Player player, GameObject mob) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: player.skills.map((e) => BattleButton(skillName: e)).toList()
+    return Card(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: player.skills.map((e) => BattleButton(skillName: e)).toList()
+      ),
     );
   }
 
@@ -115,8 +118,15 @@ class Battle extends StatelessWidget {
             SizedBox(
               width: 200,
               child: Row(
-                children: enemy.effects.map((e) => Image.asset(e.iconPath)).toList()
-              ),
+                  children: enemy.effects.map((e) => InfoPopupWidget(
+                    contentTitle: '${e.name}(${e.duration})\n${e.tooltip}',
+                    child: Image.asset(
+                      e.iconPath,
+                      cacheHeight: 30,
+                    ),
+                  )
+                ).toList()
+              )
             )
           ],
         ),
@@ -148,7 +158,14 @@ class Battle extends StatelessWidget {
             SizedBox(
               width: 200,
               child: Row(
-                  children: player.effects.map((e) => Image.asset(e.iconPath)).toList()
+                  children: player.effects.map((e) => InfoPopupWidget(
+                    contentTitle: '${e.name}(${e.duration})\n${e.tooltip}',
+                    child: Image.asset(
+                      e.iconPath,
+                      cacheHeight: 30,
+                    ),
+                  )
+                ).toList()
               ),
             )
           ],
