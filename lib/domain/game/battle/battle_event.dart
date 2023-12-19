@@ -1,17 +1,22 @@
 
-import '../game_object.dart';
+import '../game_entities/game_object.dart';
 
 abstract class BattleEvent {
+  final GameObject? char;
+  final GameObject? target;
 
+  const BattleEvent({this.char, this.target});
   String ef();
 }
 
-class Attack implements BattleEvent {
-  Map<String, dynamic> result;
-  GameObject char;
-  GameObject target;
+class Attack extends BattleEvent {
+  final Map<String, dynamic> result;
+  @override
+  final GameObject char;
+  @override
+  final GameObject target;
 
-  Attack(this.result, {required this.char, required this.target});
+  const Attack(this.result, {required this.char, required this.target});
 
   @override
   String ef() {
@@ -21,9 +26,10 @@ class Attack implements BattleEvent {
   }
 }
 
-class DamageTick implements BattleEvent {
-  Map<String, dynamic> result;
-  GameObject target;
+class DamageTick extends BattleEvent {
+  final Map<String, dynamic> result;
+  @override
+  final GameObject target;
 
   DamageTick(this.result, this.target);
 
@@ -34,15 +40,16 @@ class DamageTick implements BattleEvent {
   }
 }
 
-class AuraTick implements BattleEvent {
+class AuraTick extends BattleEvent {
   @override
   String ef() {
     return '';
   }
 }
 
-class OnCrit implements BattleEvent {
-  GameObject char;
+class OnCrit extends BattleEvent {
+  @override
+  final GameObject char;
 
   OnCrit(this.char);
 
@@ -52,7 +59,8 @@ class OnCrit implements BattleEvent {
   }
 }
 
-class OnEvade implements BattleEvent {
+class OnEvade extends BattleEvent {
+  @override
   GameObject char;
 
   OnEvade(this.char);
@@ -63,7 +71,7 @@ class OnEvade implements BattleEvent {
   }
 }
 
-class OnTakeDamage implements BattleEvent {
+class OnTakeDamage extends BattleEvent {
   @override
   String ef() {
     // TODO: implement ef
@@ -71,7 +79,7 @@ class OnTakeDamage implements BattleEvent {
   }
 }
 
-class OnDealDamage implements BattleEvent {
+class OnDealDamage extends BattleEvent {
   @override
   String ef() {
     // TODO: implement ef
@@ -79,8 +87,9 @@ class OnDealDamage implements BattleEvent {
   }
 }
 
-class NotEnoughMana implements BattleEvent {
+class NotEnoughMana extends BattleEvent {
   String result;
+  @override
   GameObject char;
 
   NotEnoughMana(this.result, this.char);

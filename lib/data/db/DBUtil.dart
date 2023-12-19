@@ -18,8 +18,16 @@ class DBUtils {
   }
 
 
-  Future<void> updateInfo({required String doc, required String field, required int value, String updateType = 'set'}) async {
-  _playerService.changeInfo(doc: doc, field: field, value: value, updateType: updateType);
+  Future<void> updateInfo({required String doc, required String field, required dynamic value, DataUpdateType updateType = DataUpdateType.set}) async {
+    _playerService.changeInfo(doc: doc, field: field, value: value, updateType: updateType);
+  }
+
+  Future<void> changeLocation(String location) async {
+    _playerService.changeLocation(location);
+  }
+
+  Future<void> changeClass(String newClass) async {
+    _playerService.changeClass(newClass);
   }
 
   Future<Mob> getMob(mobId) async {

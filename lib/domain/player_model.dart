@@ -1,16 +1,29 @@
 
+import 'package:arentale/data/service/player_service.dart';
 import 'package:arentale/domain/repository/player_repository.dart';
 import 'package:arentale/internal/dependencies/repository_module.dart';
 
 import 'game/player/player.dart';
 
 class PlayerModel {
-  final Player player;
+  bool _needToUpdate = false;
+  Player player;
   final PlayerRepository playerRepository = RepositoryModule.playerRepository();
 
   PlayerModel({
     required this.player
   });
+
+  void markAsNeededToUpdate() async {
+    _needToUpdate = true;
+    player = await playerRepository.getPlayer();
+    _needToUpdate = false;
+  }
+
+  void changeLocation(String location) {
+    player.info['location'] = location;
+    playerRepository.changeLocation(location);
+  }
 
   void addGold(int value) {
     player.info['gold'] += value;
@@ -33,6 +46,11 @@ class PlayerModel {
         continue;
       }
       player.inventory.addAll({element: 1});
+      playerRepository.updateInfo(
+          doc: 'inventory',
+          field: element,
+          value: player.inventory[element]
+      );
     }
   }
 
@@ -66,6 +84,22 @@ class PlayerModel {
         'baseDEX': 2
       }
     };
+    final levelSkills = {
+      'Warrior': {
+        2: 'Swift Rush',
+        3: 'Bloodletting'
+      },
+      'Rogue': {
+        2: 'Evasion',
+        3: 'Experimental Potion'
+      }
+    };
+    final levelPassive = {
+      'Blade Master': {
+        7: 'Bonecrusher'
+      }
+    };
+
     player.info['exp'] -= player.lForm;
     player.info['level'] += 1;
     playerRepository.updateInfo(doc: 'info', field: 'exp', value: player.info['exp']);
@@ -75,8 +109,16 @@ class PlayerModel {
       playerRepository.updateInfo(
           doc: 'stats',
           field: element,
-          value: levelStat[player.info['class']]![element]!,
-          updateType: 'add'
+          value: levelStat[player.info['class']]![element],
+          updateType: DataUpdateType.add
+      );
+    }
+    if (levelSkills[player.info['class']]!.containsKey(player.info['level'])) {
+      player.skills.add(levelSkills[player.info['class']]![player.info['level']]);
+      playerRepository.updateInfo(
+          doc: 'stats',
+          field: 'skills',
+          value: player.skills
       );
     }
   }

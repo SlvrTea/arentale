@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 import '../../../internal/dependencies/repository_module.dart';
 import '../../game/battle/battle_controller.dart';
-import '../../game/game_object.dart';
+import '../../game/game_entities/game_object.dart';
 import '../../game/mob.dart';
 import '../../game/player/player.dart';
 import '../../player_model.dart';
@@ -31,7 +31,7 @@ class BattleBloc extends Bloc<BattleEvent, BattleState> {
     emit(event.currentState);
   }
 
-  _onBattleEndEvent(BattleEndEvent event, Emitter emit) async {
+  _onBattleEndEvent(BattleEndEvent event, Emitter emit) {
     emit(BattleEndState(event.log));
   }
 }

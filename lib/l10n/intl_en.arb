@@ -14,5 +14,11 @@
   "slinskD1": "Это небольшой тестовый квест, сделанный для проверки игровых систем. В дальнейших обновлениях вступление будет переделано.",
   "slinskO1": "Ок",
   "critChance": "Crit Chance",
-  "critDamage": "Crit Damage"
+  "critDamage": "Crit Damage",
+  "statsTitle": "Stats",
+  "infoTitle": "Info",
+  "level": "Level",
+  "gold": "Gold",
+  "slots": "Slots",
+  "type": "Type"
 }

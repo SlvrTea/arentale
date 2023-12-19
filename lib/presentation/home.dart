@@ -1,96 +1,105 @@
-import 'package:arentale/presentation/charInfo.dart';
+import 'package:arentale/presentation/char_info/char_info.dart';
 import 'package:arentale/presentation/equip_screen.dart';
+import 'package:arentale/presentation/locations/location.dart';
 import 'package:arentale/presentation/locations/slinsk.dart';
+import 'package:arentale/presentation/game_map/map.dart';
+import 'package:arentale/presentation/skill_tree.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../domain/state/navigation_state.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../generated/l10n.dart';
 
-class Wrapper extends StatelessWidget {
-  const Wrapper({super.key, required this.uuid});
-  final String uuid;
+GameLocation getLocation() {
+  final userInfo = Hive.box('userInfo');
+  final userLoc = userInfo.get('location');
+  final locations = {
+    'slinskPrologue': Slinsk(initDialog: userInfo.get('dialogId', defaultValue: 'd1.1')),
+    'slinskTavern': Slinsk(initDialog: userInfo.get('dialogId', defaultValue: 'd1.1'))
+  };
+  return locations[userLoc]!;
+}
+
+class Home extends StatelessWidget {
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => NavigationBloc(),
-      child: Home(uuid: uuid),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(S.of(context).appbar),
+        actions: const [
+          _MapButton()
+        ],
+      ),
+      body: getLocation(),
+      drawer: const _Drawer(),
     );
   }
 }
 
-class Home extends StatelessWidget {
-  const Home({super.key, required this.uuid});
-  final String uuid;
+class _MapButton extends StatelessWidget {
+  const _MapButton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        return Scaffold(
-          appBar: AppBar(title: Text(S.of(context).appbar)),
-          body: BlocBuilder<NavigationBloc, int>(
-            builder: (context, state) {
-              return _getBody()[state];
-            },
-          ),
-          bottomNavigationBar: _getNavigationBar(),
-          drawer: Drawer(
+    return IconButton(
+        onPressed: () {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => MapScreen(map: getLocation().locationMap))
+          );
+        },
+        icon: const Icon(Icons.map)
+    );
+  }
+}
+
+class _Drawer extends StatelessWidget {
+  const _Drawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(uuid)
+                const SizedBox(
+                  height: 20,
+                ),
+                ListTile(
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const CharInfo())
+                    );
+                  },
+                  leading: const Icon(Icons.person),
+                  title: const Text('Profile'),
+                ),
+                ListTile(
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const EquipScreen())
+                    );
+                  },
+                  leading: const Icon(Icons.shopping_bag),
+                  title: const Text('Equip'),
+                ),
+                ListTile(
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const SkillTree())
+                    );
+                  },
+                  leading: const Icon(Icons.book),
+                  title: const Text('Skill tree'),
+                ),
               ],
             ),
           ),
-        );
-      }
-    );
-  }
-
-  List<Widget> _getBody() {
-    return <Widget>[
-      const Slinsk(),
-      const Center(child: Text('Map')),
-      const CharInfo(),
-      const EquipScreen()
-    ];
-  }
-
-  Widget _getNavigationBar() {
-    return BlocBuilder<NavigationBloc, int>(
-      builder: (context, state) {
-        return NavigationBar(
-          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          selectedIndex: state,
-          onDestinationSelected: (int index) {
-            BlocProvider.of<NavigationBloc>(context).add(
-                NavigationChangeEvent(value: index));
-          },
-          destinations: const <Widget>[
-            NavigationDestination(
-                icon: Icon(Icons.home),
-                selectedIcon: Icon(Icons.home_outlined),
-                label: 'Home'
-            ),
-            NavigationDestination(
-                icon: Icon(Icons.map),
-                selectedIcon: Icon(Icons.map_outlined),
-                label: 'Map'
-            ),
-            NavigationDestination(
-                icon: Icon(Icons.account_circle),
-                selectedIcon: Icon(Icons.account_circle_outlined),
-                label: 'Char'
-            ),
-            NavigationDestination(
-                icon: Icon(Icons.shopping_bag),
-                selectedIcon: Icon(Icons.shopping_bag_outlined),
-                label: 'Equip'
-            )
-          ],
-        );
-      },
+        ],
+      )
     );
   }
 }

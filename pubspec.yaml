@@ -41,6 +41,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   provider: ^6.1.1
+  info_popup: ^4.3.1
+  hive_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -66,21 +68,7 @@ flutter:
   generate: true
 
   assets:
-    - assets/evasion.jpg
-    - assets/sneaky_blow.jpg
-    - assets/poisoned_shot.jpg
-    - assets/intoxication.jpg
-    - assets/swing_and_cut.jpg
-    - assets/toxic_vapor.jpg
-    - assets/battle_lust.jpg
-    - assets/blade_strike.jpg
-    - assets/bloodletting.jpg
-    - assets/breakthrough.jpg
-    - assets/execution.jpg
-    - assets/shining_blade.jpg
-    - assets/superiority.jpg
-    - assets/swift_rush.jpg
-    - assets/toxic_vapor.jpg
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

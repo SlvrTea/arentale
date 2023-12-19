@@ -25,20 +25,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "appbar":
             MessageLookupByLibrary.simpleMessage("Arentale Pre Alpha 0.1"),
         "attack": MessageLookupByLibrary.simpleMessage("Сила Атаки"),
-        "critChance": MessageLookupByLibrary.simpleMessage("Crit Chance"),
-        "critDamage": MessageLookupByLibrary.simpleMessage("Crit Damage"),
+        "critChance": MessageLookupByLibrary.simpleMessage("Крит шанс"),
+        "critDamage": MessageLookupByLibrary.simpleMessage("Крит урон"),
         "dexterity": MessageLookupByLibrary.simpleMessage("Ловкость"),
         "experience": MessageLookupByLibrary.simpleMessage("Опыт"),
+        "gold": MessageLookupByLibrary.simpleMessage("Золото"),
         "health": MessageLookupByLibrary.simpleMessage("Здоровье"),
+        "infoTitle": MessageLookupByLibrary.simpleMessage("Статистика"),
         "intelligence": MessageLookupByLibrary.simpleMessage("Интеллект"),
+        "level": MessageLookupByLibrary.simpleMessage("Уровень"),
         "mana": MessageLookupByLibrary.simpleMessage("Мана"),
         "slinskD1": MessageLookupByLibrary.simpleMessage(
-            "Это небольшой тестовый квест, сделанный для проверки игровых систем. В дальнейших обновлениях вступление будет переделано."),
+            "Это небольшой тестовый квест, сделанный для проверки игровых систем. В дальнейших обновлениях вступление может быть переделано."),
         "slinskO1": MessageLookupByLibrary.simpleMessage("Ок"),
+        "slots": MessageLookupByLibrary.simpleMessage("Slots"),
         "spellPower": MessageLookupByLibrary.simpleMessage("Сила Заклинаний"),
         "spirit": MessageLookupByLibrary.simpleMessage("Дух"),
+        "statsTitle": MessageLookupByLibrary.simpleMessage("Характеристики"),
         "strength": MessageLookupByLibrary.simpleMessage("Сила"),
         "testBattle": MessageLookupByLibrary.simpleMessage("Тестовое сражение"),
+        "type": MessageLookupByLibrary.simpleMessage("Type"),
         "vitality": MessageLookupByLibrary.simpleMessage("Выносливость")
       };
 }

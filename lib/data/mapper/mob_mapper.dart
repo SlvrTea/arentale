@@ -1,5 +1,5 @@
 
-import 'package:arentale/data/mob_db.dart';
+import 'package:arentale/data/db/mob_db.dart';
 import 'package:arentale/domain/game/mob.dart';
 
 class MobMapper {
