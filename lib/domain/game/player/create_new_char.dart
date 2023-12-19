@@ -1,4 +1,6 @@
 import 'package:arentale/data/service/player_service.dart';
+import 'package:arentale/presentation/locations/location.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void createWarrior(String uuid, String name) {
   Map<String, dynamic> newPlayerInfo = {
@@ -36,7 +38,8 @@ void createWarrior(String uuid, String name) {
     'baseVIT': 3,
     'baseSPI': 1,
     'baseDEX': 2,
-    'skills': ['Swing And Cut']
+    'skills': ['Swing And Cut'],
+    'passive': []
   };
   Map<String, dynamic> newPlayerEquip = {
     'rHand': 'Old Sword',
@@ -45,6 +48,9 @@ void createWarrior(String uuid, String name) {
     'trinket': 'None'
   };
   Map<String, dynamic> newPlayerInventory = {};
+
+  List playerTags = Hive.box('userInfo').get('tags');
+  playerTags.add(PlayerTags.warrior);
 
   PlayerService.createPlayer(
       uuid: uuid,
@@ -85,7 +91,8 @@ void createRogue(String uuid, String name) {
     'baseVIT': 1,
     'baseSPI': 2,
     'baseDEX': 5,
-    "skills": ['Sneaky blow', 'Evasion']
+    "skills": ['Sneaky blow'],
+    'passive': []
   };
   Map<String, dynamic> newPlayerEquip = {
     'rHand': 'Sharp Dagger',
@@ -94,6 +101,8 @@ void createRogue(String uuid, String name) {
     'trinket': 'None'
   };
   Map<String, dynamic> newPlayerInventory = {};
+  List playerTags = Hive.box('userInfo').get('tags');
+  playerTags.add(PlayerTags.rogue);
 
   PlayerService.createPlayer(
       uuid: uuid,
@@ -131,7 +140,8 @@ void createMage(String uuid, String name) {
     'baseVIT': 1,
     'baseSPI': 4,
     'baseDEX': 2,
-    'skills': ['Fireball']
+    'skills': ['Fireball'],
+    'passive': []
   };
   Map<String, dynamic> newPlayerEquip = {
     'rHand': 'Apprentices Staff',
@@ -140,6 +150,8 @@ void createMage(String uuid, String name) {
     'trinket': 'None'
   };
   Map<String, dynamic> newPlayerInventory = {};
+  List playerTags = Hive.box('userInfo').get('tags');
+  playerTags.add(PlayerTags.mage);
 
   PlayerService.createPlayer(
       uuid: uuid,

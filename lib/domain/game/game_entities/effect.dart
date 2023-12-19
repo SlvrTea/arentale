@@ -1,6 +1,7 @@
 
 import 'package:arentale/domain/game/battle/battle_event.dart';
 import 'package:arentale/domain/game/game_entities/game_object.dart';
+import 'package:arentale/domain/game/game_entities/stat.dart';
 import 'package:arentale/domain/game/game_entities/stat_modifier.dart';
 
 abstract class Duration {
@@ -10,7 +11,6 @@ abstract class Duration {
 abstract class Effect implements Duration {
   final GameObject char;
   final String name;
-  final String tooltip;
   final String iconPath;
   int duration;
   int stack;
@@ -19,12 +19,13 @@ abstract class Effect implements Duration {
   Effect({
     required this.char,
     required this.name,
-    required this.tooltip,
     required this.iconPath,
     required this.duration,
     required this.maxStack,
     this.stack = 1
   });
+
+  String get tooltip;
 
   BattleEvent tick();
 }
@@ -35,28 +36,27 @@ abstract class DamageOnTickEffect extends Effect {
     required super.char,
     required this.target,
     required super.name,
-    required super.tooltip,
     required super.iconPath,
     required super.duration,
     required super.maxStack,
     super.stack = 1
   });
 
+  @override
+  String get tooltip;
+
   int get damage;
 
   @override
   void _decreaseDuration() {
     duration -= 1;
-    if (duration <= 0) {
-      target.effects.remove(this);
-    }
   }
 
   @override
   BattleEvent tick() {
     _decreaseDuration();
     return DamageTick(
-        {'message': '\n$name: $damage', 'damage':damage},
+        {'message': '\n🟢$name: $damage', 'damage':damage},
         target
     );
   }
@@ -66,12 +66,14 @@ abstract class Aura extends Effect {
   Aura({
     required super.char,
     required super.name,
-    required super.tooltip,
     required super.iconPath,
     required super.duration,
     required super.maxStack,
     super.stack = 1
   });
+
+  @override
+  String get tooltip;
 
   @override
   void _decreaseDuration() {
@@ -94,7 +96,6 @@ abstract class StatModifierAura extends Aura {
     required super.char,
     required this.modifier,
     required super.name,
-    required super.tooltip,
     required super.iconPath,
     required super.duration,
     required super.maxStack,
@@ -102,6 +103,9 @@ abstract class StatModifierAura extends Aura {
   }) {
     initial();
   }
+
+  @override
+  String get tooltip;
 
   void initial();
 
@@ -121,11 +125,13 @@ class Poison extends DamageOnTickEffect {
     required super.char,
     required super.target,
     super.name = 'Poison',
-    super.tooltip = 'Каждый ход наносит урон, равный 20% от силы атаки',
     super.iconPath = 'assets/poison.jpg',
-    super.duration = 3,
+    super.duration = 4,
     super.maxStack = 3
   });
+
+  @override
+  String get tooltip => 'Каждый ход наносит $damage урона';
 
   @override
   get damage => (char.ATK * 0.2 * stack).round();
@@ -137,11 +143,13 @@ class ToxicVaporAura extends Aura {
     required super.char,
     required this.target,
     super.name = 'Toxic vapor',
-    super.tooltip = '',
     super.iconPath = 'assets/toxic_vapor.jpg',
     super.duration = 3,
     super.maxStack = 1
   });
+
+  @override
+  String get tooltip => 'Накладывает Poison на противника';
 
   @override
   BattleEvent tick() {
@@ -153,13 +161,15 @@ class ToxicVaporAura extends Aura {
 class PoisonBombAura extends StatModifierAura {
   PoisonBombAura({
     required super.char,
-    super.modifier = const StatModifier(-0.20),
+    super.modifier = const StatModifier(0.20),
     super.name = 'Poison Bomb',
-    super.tooltip = '',
     super.iconPath = 'assets/poison_bomb.jpg',
     super.duration = 4,
     super.maxStack = 1
   });
+
+  @override
+  String get tooltip => 'Получаемый урон повышен на 20%';
 
   @override
   void initial() {
@@ -177,11 +187,13 @@ class ExperimentalPotionAura extends StatModifierAura {
     required super.char,
     super.modifier = const StatModifier(0.15, type: ModifierType.percent),
     super.name = 'Experimental Potion',
-    super.tooltip = '',
     super.iconPath = 'assets/experimental_potion.jpg',
     super.duration = 5,
     super.maxStack = 1
   });
+
+  @override
+  String get tooltip => 'Ловкость повышена на 15%';
 
   @override
   void initial() {
@@ -199,11 +211,13 @@ class Bleed extends DamageOnTickEffect {
     required super.char,
     required super.target,
     super.name = 'Bleed',
-    super.tooltip = '',
-    super.iconPath = '', //TODO: add bleed icon
-    super.duration = 3,
+    super.iconPath = 'assets/bleed.jpg',
+    super.duration = 4,
     super.maxStack = 3
   });
+
+  @override
+  String get tooltip => 'Каждый ход наносит $damage урона';
 
   @override
   int get damage => (char.ATK * 0.2 * stack).round();
@@ -215,11 +229,13 @@ class BloodFountainAura extends StatModifierAura {
     required super.char,
     required super.modifier,
     super.name = 'Blood Fountain',
-    super.tooltip = '',
-    super.iconPath = '',
+    super.iconPath = 'assets/blood_fountain.jpg',
     super.duration = 4,
     super.maxStack = 1
   });
+
+  @override
+  String get tooltip => '';
 
   @override
   void initial() {
@@ -237,11 +253,13 @@ class ReapAura extends StatModifierAura {
     required super.char,
     required super.modifier,
     super.name = 'Reap',
-    super.tooltip = '',
-    super.iconPath = '',
+    super.iconPath = 'assets/reap.jpg',
     super.duration = 5,
     super.maxStack = 1
   });
+
+  @override
+  String get tooltip => '';
 
   @override
   void initial() {
@@ -258,11 +276,13 @@ class Superiority extends Aura {
   Superiority({
     required super.char,
     super.name = 'Superiority',
-    super.tooltip = '',
     super.iconPath = 'assets/superiority.jpg',
     super.duration = 99,
     super.maxStack = 1
   });
+
+  @override
+  String get tooltip => '';
 }
 
 class SwiftRushAura extends StatModifierAura {
@@ -270,11 +290,13 @@ class SwiftRushAura extends StatModifierAura {
     required super.char,
     super.modifier = const StatModifier(0.15),
     super.name = 'Swift Rush',
-    super.tooltip = 'Повышает крит шанс на 15%',
     super.iconPath = 'assets/swift_rush.jpg',
     super.duration = 3,
     super.maxStack = 1
   });
+
+  @override
+  String get tooltip => 'Повышает крит шанс на 15%';
 
   @override
   void initial() {
@@ -288,24 +310,38 @@ class SwiftRushAura extends StatModifierAura {
 }
 
 class BonecrusherAura extends StatModifierAura {
+  StatModifier mod = const StatModifier(-0.01);
   BonecrusherAura({
     required super.char,
-    super.modifier = const StatModifier(0.01),
+    super.modifier = const StatModifier(-0.01),
     super.name = 'Bonecrusher',
-    super.tooltip = '',
     super.iconPath = 'assets/swift_rush.jpg',
     super.duration = 99,
     super.maxStack = 15
-  });
+  }) {
+    mod = StatModifier(-0.01 * stack);
+  }
+
+  @override
+  String get tooltip => 'Понижает получаемый урон на ${1 * stack}%';
 
   @override
   void initial() {
-    char.critChance.addModifier(modifier);
+    char.stats.physicalDamageResist.addModifier(mod);
+    char.stats.magicalDamageResist.addModifier(mod);
   }
 
   @override
   void onExpire() {
-    char.critChance.removeModifier(modifier);
+    char.stats.physicalDamageResist.removeModifier(mod);
+    char.stats.magicalDamageResist.removeModifier(mod);
+  }
+  @override
+  BattleEvent tick() {
+    onExpire();
+    mod = StatModifier(-0.01 * stack);
+    initial();
+    return super.tick();
   }
 }
 
@@ -314,11 +350,13 @@ class EvasionAura extends StatModifierAura {
     required super.char,
     super.modifier = const StatModifier(0.5, type: ModifierType.percent),
     super.name = 'Evasion',
-    super.tooltip = '',
     super.iconPath = 'assets/evasion.jpg',
-    super.duration = 3,
+    super.duration = 2,
     super.maxStack = 1
   });
+
+  @override
+  String get tooltip => 'Повышает шанс уклонения на 50%';
 
   @override
   void initial() {
@@ -336,12 +374,14 @@ class BloodlettingAura extends StatModifierAura {
     required super.char,
     super.modifier = const StatModifier(0.05),
     super.name = 'Bloodletting',
-    super.tooltip = '',
     super.iconPath = 'assets/bloodletting.jpg',
     super.duration = 99,
     super.maxStack = 1,
     super.stack = 1
   });
+
+  @override
+  String get tooltip => '';
 
   @override
   void initial() {
@@ -360,12 +400,14 @@ class BattleLustAura extends StatModifierAura {
     required super.char,
     super.modifier = const StatModifier(0.1),
     required super.name,
-    required super.tooltip,
     required super.iconPath,
     required super.duration,
     required super.maxStack,
     required super.stack
   });
+
+  @override
+  String get tooltip => '';
 
   @override
   void initial() {
@@ -376,5 +418,45 @@ class BattleLustAura extends StatModifierAura {
   void onExpire() {
     // TODO: implement onExpire
   }
+}
 
+class Flame extends DamageOnTickEffect {
+  Flame({
+    required super.char,
+    required super.target,
+    super.name = 'Flame',
+    super.iconPath = 'assets/flame.jpg',
+    super.duration = 4,
+    super.maxStack = 3
+  });
+
+  @override
+  String get tooltip => '';
+
+  @override
+  int get damage => (char.MATK * 0.25).round();
+}
+
+class FireBlastAura extends StatModifierAura {
+  FireBlastAura({
+    required super.char,
+    required super.modifier,
+    super.name = 'Fire Blast',
+    super.iconPath = 'assets/fire_blast.jpg',
+    super.duration = 3,
+    super.maxStack = 3
+  });
+
+  @override
+  String get tooltip => '';
+
+  @override
+  void initial() {
+    char.critChance.addModifier(modifier);
+  }
+
+  @override
+  void onExpire() {
+    char.critChance.removeModifier(modifier);
+  }
 }

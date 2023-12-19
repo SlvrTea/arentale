@@ -36,7 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "level": MessageLookupByLibrary.simpleMessage("Уровень"),
         "mana": MessageLookupByLibrary.simpleMessage("Мана"),
         "slinskD1": MessageLookupByLibrary.simpleMessage(
-            "Это небольшой тестовый квест, сделанный для проверки игровых систем. В дальнейших обновлениях вступление будет переделано."),
+            "Это небольшой тестовый квест, сделанный для проверки игровых систем. В дальнейших обновлениях вступление может быть переделано."),
         "slinskO1": MessageLookupByLibrary.simpleMessage("Ок"),
         "slots": MessageLookupByLibrary.simpleMessage("Slots"),
         "spellPower": MessageLookupByLibrary.simpleMessage("Сила Заклинаний"),

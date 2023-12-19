@@ -1,5 +1,5 @@
 
-import 'package:arentale/presentation/map_tile.dart';
+import 'package:arentale/presentation/game_map/map_tile.dart';
 import 'package:flutter/material.dart';
 
 class MapScreen extends StatelessWidget {
@@ -7,7 +7,7 @@ class MapScreen extends StatelessWidget {
   const MapScreen({super.key, required this.map});
   
   List<Widget> _buildMap() {
-    final List<Widget> result = List.filled(35, const MapTile());
+    final List<Widget> result = List.filled(35, MapTile(tileTexture: Image.asset('assets/blank_icon.png')));
     for (var e in map.keys) {
       result[e] = map[e]!;
     }
@@ -21,9 +21,9 @@ class MapScreen extends StatelessWidget {
         title: const Text('Map'),
       ),
       body: GridView.count(
-        crossAxisSpacing: 5,
+        crossAxisSpacing: 3,
         crossAxisCount: 5,
-        mainAxisSpacing: 5,
+        mainAxisSpacing: 3,
         children: _buildMap()
       ),
     );

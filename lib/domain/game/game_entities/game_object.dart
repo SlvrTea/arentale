@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:arentale/domain/game/battle/battle_event.dart';
+import 'package:arentale/domain/game/battle/on_event.dart';
 import 'package:arentale/domain/game/game_entities/effect.dart';
 import 'package:arentale/domain/game/game_entities/stats.dart';
 
@@ -99,12 +100,13 @@ abstract class Drop {
   }
 }
 
-abstract class GameObject with Crits, EffectManager, Evade implements IStats, ICast {
+abstract class GameObject with Crits, EffectManager, Evade implements IStats{
   final Map<String, dynamic> info;
+  final List<EventListener> onEvent = [];
 
   GameObject({
     required this.info
-    });
+  });
 
   void takeDamage(int value);
 

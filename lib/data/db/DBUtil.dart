@@ -26,6 +26,10 @@ class DBUtils {
     _playerService.changeLocation(location);
   }
 
+  Future<void> changeClass(String newClass) async {
+    _playerService.changeClass(newClass);
+  }
+
   Future<Mob> getMob(mobId) async {
     final result = await _mobService.getMob(mobId);
     return MobMapper.fromDatabase(result);

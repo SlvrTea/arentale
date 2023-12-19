@@ -24,4 +24,9 @@ class PlayerDataRepository extends PlayerRepository {
   Future<void> changeLocation(String location) {
     return _dbUtils.changeLocation(location);
   }
+
+  @override
+  Future<void> changeClass(String newClass) {
+    return _dbUtils.changeClass(newClass);
+  }
 }

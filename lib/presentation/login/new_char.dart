@@ -2,7 +2,7 @@
 import 'package:arentale/domain/game/player/create_new_char.dart';
 import 'package:flutter/material.dart';
 
-import 'home.dart';
+import '../home.dart';
 
 class NewChar extends StatelessWidget {
   const NewChar({super.key, required this.uuid, required this.name});

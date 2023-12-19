@@ -1,6 +1,6 @@
 
 import 'package:arentale/domain/game/player/player.dart';
-import '../player_db.dart';
+import '../db/player_db.dart';
 
 class PlayerMapper {
   static Player fromDataBase(PlayerDB player) {
@@ -9,7 +9,7 @@ class PlayerMapper {
       stats: player.stats,
       inventory: player.inventory,
       equip: player.equip,
-      skills: player.skills
+      skills: player.skills,
     );
   }
 }

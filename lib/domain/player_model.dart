@@ -88,8 +88,18 @@ class PlayerModel {
       'Warrior': {
         2: 'Swift Rush',
         3: 'Bloodletting'
+      },
+      'Rogue': {
+        2: 'Evasion',
+        3: 'Experimental Potion'
       }
     };
+    final levelPassive = {
+      'Blade Master': {
+        7: 'Bonecrusher'
+      }
+    };
+
     player.info['exp'] -= player.lForm;
     player.info['level'] += 1;
     playerRepository.updateInfo(doc: 'info', field: 'exp', value: player.info['exp']);

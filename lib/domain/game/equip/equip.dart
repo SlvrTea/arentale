@@ -1,5 +1,5 @@
 
-import '../game_entities/equip_item.dart';
+import 'equip_item.dart';
 
 class Equip {
   EquipItem rHand;

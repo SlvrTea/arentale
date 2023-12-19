@@ -8,4 +8,6 @@ abstract class PlayerRepository {
   Future<void> updateInfo({required String doc, required String field, required dynamic value, DataUpdateType updateType = DataUpdateType.set});
 
   Future<void> changeLocation(String location);
+
+  Future<void> changeClass(String newClass);
 }

@@ -14,8 +14,8 @@ class _DialogOptionState extends State<DialogOption> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: widget.result,
-        child: Text(widget.option)
+      onPressed: widget.result,
+      child: Text(widget.option)
     );
   }
 }

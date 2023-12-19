@@ -1,13 +1,13 @@
 
 import 'package:arentale/domain/game/player/player.dart';
-import 'package:arentale/presentation/stat_element.dart';
+import 'package:arentale/presentation/char_info/stat_element.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
-import '../domain/player_model.dart';
-import '../generated/l10n.dart';
+import '../../domain/player_model.dart';
+import '../../generated/l10n.dart';
 
 class CharInfo extends StatelessWidget {
   const CharInfo({super.key});
@@ -160,6 +160,10 @@ class _PlayerStatsWidget extends StatelessWidget {
         StatElement(
             statName: S.of(context).critDamage,
             statValue: '${(player.critDamage.finalValue * 100).round()}%'
+        ),
+        StatElement(
+          statName: 'Шанс уклонения',
+          statValue: '${(player.evasionChance.finalValue * 100).round()}%'
         )
       ],
     );

@@ -1,10 +1,11 @@
 
 import 'package:arentale/internal/dependencies/repository_module.dart';
-import 'package:arentale/presentation/login_screen.dart';
+import 'package:arentale/presentation/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '../domain/const.dart';
 import '../domain/player_model.dart';
 import '../generated/l10n.dart';
 
@@ -27,6 +28,7 @@ class Application extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
+        navigatorKey: navigatorKey,
         locale: const Locale('ru', 'RU'),
         supportedLocales: S.delegate.supportedLocales,
         theme: ThemeData(

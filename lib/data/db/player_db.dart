@@ -1,6 +1,7 @@
 
-import '../domain/game/game_entities/equip.dart';
-import '../domain/game/game_entities/stats.dart';
+import '../../domain/game/game_entities/stats.dart';
+import '../../domain/game/equip/equip.dart';
+
 
 class PlayerDB {
   final Stats stats;

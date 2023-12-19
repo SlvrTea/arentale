@@ -8,7 +8,7 @@ import 'package:arentale/domain/game/game_entities/stat.dart';
 import 'package:arentale/domain/game/game_entities/stat_modifier.dart';
 import 'package:arentale/domain/game/game_entities/stats.dart';
 
-class Mob extends GameObject implements Drop {
+class Mob extends GameObject implements Drop, ICast {
   late Stat _statHP;
   late Stat _statMP;
   late Stat _critDamage;

@@ -8,7 +8,7 @@ import 'package:arentale/domain/game/game_entities/stat_modifier.dart';
 import 'package:arentale/domain/game/game_entities/stats.dart';
 
 import '../game_entities/stat.dart';
-import '../game_entities/equip.dart';
+import '../equip/equip.dart';
 
 class Player extends GameObject {
   final List skills;
@@ -28,7 +28,7 @@ class Player extends GameObject {
     required super.info,
     required this.inventory,
     required this.equip,
-    required this.skills
+    required this.skills,
   }) {
     _statHP = Stat(stats.HP.finalValue + (equip.getStat('VIT') + stats.VIT.finalValue) * 5);
     _statMP = Stat(stats.MP.finalValue + (equip.getStat('SPI') + stats.SPI.finalValue) * 3);
@@ -91,7 +91,7 @@ class Player extends GameObject {
   @override
   void takeDamage(int value) {
     _statHP.addModifier(StatModifier(-value));
-    if (_statHP.finalValue + value >= maxHP) {
+    if (_statHP.finalValue - value >= maxHP) {
       _statHP.modifiers.clear();
     }
   }
@@ -106,6 +106,8 @@ class Player extends GameObject {
         ATK = equip.getStat('ATK') + (equip.getStat('STR') + stats.STR.finalValue);
       case 'Rogue':
         ATK = equip.getStat('ATK') + (equip.getStat('STR') + stats.STR.finalValue) % 2 + (equip.getStat('DEX') + stats.DEX.finalValue) * 2;
+      case 'Poison Master':
+        ATK = equip.getStat('ATK') + (equip.getStat('STR') + stats.STR.finalValue) * 2 + (equip.getStat('DEX') + stats.DEX.finalValue);
     }
     return ATK.round();
   }
@@ -120,10 +122,9 @@ class Player extends GameObject {
         MATK = equip.getStat('MATK') + (equip.getStat('INT') + stats.INT.finalValue) * 3;
       case 'Rogue':
         MATK = equip.getStat('MATK') + (equip.getStat('INT') + stats.INT.finalValue) % 2;
+      case 'Poison Master':
+        MATK = equip.getStat('MATK') + (equip.getStat('INT') + stats.INT.finalValue) % 2;
     }
     return MATK.round();
   }
-
-  @override
-  String cast() => skills[Random().nextInt(skills.length)];
 }

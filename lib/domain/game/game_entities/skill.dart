@@ -17,6 +17,8 @@ Skill? getSkill(GameObject char, GameObject target, String name) {
     'Poisoned Shot': PoisonedShot(char: char, target: target),
     'Intoxication': Intoxication(char: char, target: target),
     'Toxic Vapor': ToxicVapor(char: char, target: target),
+    'Poison Bomb': PoisonBomb(char: char, target: target),
+    'Experimental Potion': ExperimentalPotion(char: char),
     'Swing And Cut': SwingAndCut(char: char, target: target),
     'Swift Rush': SwiftRush(char: char),
     'Blade Strike': BladeStrike(char: char, target: target),
@@ -50,14 +52,14 @@ abstract class Skill {
   final GameObject char;
   final String name;
   final String? iconPath;
-  final String? tooltip;
 
   const Skill({
     required this.char,
     required this.name,
-    this.iconPath,
-    this.tooltip
+    this.iconPath
   });
+
+  String get tooltip;
 
   int get cost;
 
@@ -73,9 +75,11 @@ abstract class DamageSkill extends Skill {
     required this.target,
     required super.name,
     super.iconPath,
-    super.tooltip,
     required this.type
   });
+
+  @override
+  String get tooltip;
 
   int get damage;
 }
@@ -157,9 +161,11 @@ abstract class SelfAuraSkill extends Skill {
   const SelfAuraSkill({
     required super.char,
     required super.name,
-    super.iconPath,
-    super.tooltip
+    super.iconPath
   });
+
+  @override
+  String get tooltip;
 }
 
 mixin PlayerSelfAura on SelfAuraSkill {
@@ -186,9 +192,10 @@ abstract class EffectApply extends Skill {
   EffectApply({
     required super.char,
     required super.name,
-    super.iconPath,
-    super.tooltip
+    super.iconPath
   });
+  @override
+  String get tooltip;
 }
 
 mixin PlayerEffectApply on EffectApply {
@@ -215,9 +222,11 @@ abstract class HealingSkill extends Skill {
   HealingSkill({
     required super.char,
     required super.name,
-    super.iconPath,
-    super.tooltip
+    super.iconPath
   });
+  @override
+  String get tooltip;
+
   int get healing;
 
   @override
@@ -231,9 +240,11 @@ abstract class SpecialSkill extends Skill {
   SpecialSkill({
     required super.char,
     required super.name,
-    super.iconPath,
-    super.tooltip
+    super.iconPath
   });
+
+  @override
+  String get tooltip;
 
   @override
   List<BattleEvent> cast({List<BattleEvent> events = const []}) {
@@ -250,11 +261,13 @@ class SneakyBlow extends DamageSkill with PlayerDamage {
   const SneakyBlow({
     required super.char,
     required super.target,
-    super.name = 'Sneaky Blow',
+    super.name = 'Подлый удар',
     super.iconPath = 'assets/sneaky_blow.jpg',
-    super.tooltip = 'Sneaky Blow\n Наносит физический урон, равный 55% от силы атаки \nПотребляет 7 + 10% от базовой маны',
     super.type = DamageType.physical
   });
+
+  @override
+  String get tooltip => 'Подлый удар\nНаносит $damage физического урона\nПотребляет $cost маны';
 
   @override
   int get damage => (char.ATK * 0.55).round();
@@ -266,11 +279,13 @@ class PoisonedShot extends DamageSkill with PlayerDamage {
   const PoisonedShot({
     required super.char,
     required super.target,
-    super.name = 'Poisoned Shot',
+    super.name = 'Отравляющий укол',
     super.iconPath = 'assets/poisoned_shot.jpg',
-    super.tooltip = 'Poisoned Shot\nНаносит физический урон, равный 35% от силы атаки и накладывает Poison\nПотребляет 5 + 10% базовой маны',
     super.type = DamageType.physical
   });
+
+  @override
+  String get tooltip => 'Отравляющий укол\nНаносит $damage физического урона и накладывает Яд\nПотребляет $cost маны';
 
   @override
   int get damage => (char.ATK * 0.35).round();
@@ -288,14 +303,16 @@ class Intoxication extends DamageSkill with PlayerDamage {
   const Intoxication({
     required super.char,
     required super.target,
-    super.name = 'Intoxication',
+    super.name = 'Интоксикация',
     super.iconPath = 'assets/intoxication.jpg',
-    super.tooltip = 'Intoxication\nНаносит физический урон, равный 50% от силы атаки * кол-во зарядов Poison на цели\nПотребляет 15 + 20% от базового запаса маны',
     super.type = DamageType.physical
   });
 
   @override
-  int get damage => (char.ATK * 0.5 * getEffectStack('poison', target)).round();
+  String get tooltip => 'Интоксикация\nНаносит $damage физического урона\nПотребляет $cost маны';
+
+  @override
+  int get damage => (char.ATK * 0.5 * getEffectStack('Poison', target)).round();
   @override
   int get cost => (15 + char.baseMP * 0.2).round();
 }
@@ -305,10 +322,12 @@ class ToxicVapor extends SelfAuraSkill with PlayerSelfAura {
   const ToxicVapor({
     required super.char,
     required this.target,
-    super.name = 'Toxic Vapor',
+    super.name = 'Токсичные испарения',
     super.iconPath = 'assets/toxic_vapor.jpg',
-    super.tooltip = 'Toxic Vapor\n В течении 3 ходов накладывает на противника Poison\nПотребляет 20 + 15% от базового запаса маны',
   });
+
+  @override
+  String get tooltip => 'Токсичные испарения\nВ течении 3 ходов накладывает на противника Яд\nПотребляет $cost маны';
 
   @override
   int get cost => (20 + char.baseMP * 0.15).round();
@@ -325,10 +344,12 @@ class PoisonBomb extends EffectApply with PlayerEffectApply {
   PoisonBomb({
     required super.char,
     required this.target,
-    super.name = 'Poison Bomb',
+    super.name = 'Ядовитая бомба',
     super.iconPath = 'assets/poison_bomb.jpg',
-    super.tooltip = 'Повышает урон, получаемый целью на 20% на 4 хода\nПотребляет 20 + 25% от базового запаса маны'
   });
+
+  @override
+  String get tooltip => 'Ядовитая бомба\nПовышает урон, получаемый целью на 20% на 4 хода\nПотребляет $cost маны';
 
   @override
   int get cost => (20 + char.baseMP * 0.25).round();
@@ -343,12 +364,14 @@ class PoisonBomb extends EffectApply with PlayerEffectApply {
 class ExperimentalPotion extends HealingSkill {
   ExperimentalPotion({
     required super.char,
-    required super.name,
-    super.iconPath = 'assets/experimental_potion.jpg',
-    super.tooltip = 'Experimental Potion\n'
-        'Восстанавливает 20% от недостающего здоровья. Если восстанавливает менее 10% от максимального здоровья, повышает ловкость на 15% на 5 ходов.'
-        '\nПотребляет 25 + 15% от базового запаса маны'
+    super.name = 'Экспериментальное зелье',
+    super.iconPath = 'assets/experimental_potion.jpg'
   });
+
+  @override
+  String get tooltip => 'Experimental Potion\n'
+      'Восстанавливает 20% от недостающего здоровья. Если восстанавливает менее 10% от максимального здоровья, повышает ловкость на 15% на 5 ходов.'
+      '\nПотребляет $cost маны';
 
   @override
   int get cost => (25 + char.baseMP * 0.15).round();
@@ -367,11 +390,13 @@ class Wound extends DamageSkill with PlayerDamage {
   Wound({
     required super.char,
     required super.target,
-    super.name = 'Wound',
+    super.name = 'Рана',
     super.type = DamageType.physical,
-    super.iconPath = '', //TODO: add wound icon
-    super.tooltip = 'Wound\nНаносит физический урон, равный 45% от силы атаки и накладывает Bleed\nПотребляет 15 + 10% от базового запаса маны'
+    super.iconPath = 'assets/wound.jpg',
   });
+
+  @override
+  String get tooltip => 'Рана\nНаносит $damage физического урона и накладывает Кровотечение\nПотребляет $cost маны';
 
   @override
   int get cost => (15 + char.baseMP * 0.1).round();
@@ -391,10 +416,12 @@ class BloodFountain extends SelfAuraSkill with PlayerSelfAura {
   BloodFountain({
     required super.char,
     required this.target,
-    super.name = 'Blood Fountain',
+    super.name = 'Кровавый фонтан',
     super.iconPath = 'assets/blood_fountain.jpg',
-    super.tooltip = 'Blood Fountain\nУвиличивает силу на 5% за каждый заряд bleed на противнике на 4 хода\nПотребляет 20 + 10% от базового запаса маны'
   });
+
+  @override
+  String get tooltip => 'Кровавый фонтан\nУвиличивает силу на 5% за каждый заряд Кровотечения на противнике на 4 хода\nПотребляет $cost маны';
 
   @override
   int get cost => (20 + char.baseMP * 0.1).round();
@@ -410,11 +437,13 @@ class Gutting extends DamageSkill with PlayerDamage {
   Gutting({
     required super.char,
     required super.target,
-    super.name = 'Gutting',
+    super.name = 'Потрошение',
     super.type = DamageType.physical,
-    super.iconPath = 'assets/gutting.jpg',
-    super.tooltip = 'Gutting\nНаносит физический урон, равный 35% от силы атаки, если у цели меньше 50% здоровья, накладывает 2 заряда Bleed\nПотребляет 5 + 17% от базового запаса маны'
+    super.iconPath = 'assets/gutting.jpg'
   });
+
+  @override
+  String get tooltip => 'Потрошение\nНаносит $damage физического урона, если у цели меньше 50% здоровья, накладывает 2 заряда Кровотечения\nПотребляет $cost маны';
 
   @override
   int get cost => (5 + char.baseMP * 0.17).round();
@@ -435,10 +464,12 @@ class Gutting extends DamageSkill with PlayerDamage {
 class Vendetta extends SpecialSkill {
   Vendetta({
     required super.char,
-    super.name = 'Vendetta',
-    super.iconPath = '',
-    super.tooltip = 'Vendetta\nЕсли вы находитесь под действием blood fountain, восстанавливает 20% маны'
+    super.name = 'Вендетта',
+    super.iconPath = 'assets/experimental_potion.jpg', //TODO: add Vendetta icon
   });
+
+  @override
+  String get tooltip => 'Вендетта\nЕсли вы находитесь под действием Кровавого фонтана, восстанавливает 20% маны';
 
   @override
   int get cost => 0;
@@ -457,10 +488,12 @@ class Reap extends EffectApply with PlayerEffectApply {
   Reap({
     required super.char,
     required this.target,
-    super.name = 'Reap',
+    super.name = 'Жатва',
     super.iconPath = 'assets/reap.jpg',
-    super.tooltip = 'Уменьшает наносимый противником урон на 7% за каждый заряд bleed на 5 ходов\nПотребляет 10 + 20% от базового запаса маны'
   });
+
+  @override
+  String get tooltip => 'Жатва\nУменьшает наносимый противником урон на 7% за каждый заряд Кровотечения на 5 ходов\nПотребляет $cost маны';
 
   @override
   int get cost => (10 + char.baseMP * 0.2).round();
@@ -475,13 +508,21 @@ class Reap extends EffectApply with PlayerEffectApply {
 class Evasion extends SelfAuraSkill with PlayerSelfAura {
   const Evasion({
     required super.char,
-    super.name = 'Evasion',
-    super.iconPath = 'assets/evasion.jpg',
-    super.tooltip = '',
+    super.name = 'Ускользание',
+    super.iconPath = 'assets/evasion.jpg'
   });
 
   @override
-  int get cost => 0;
+  String get tooltip => 'Ускользание\nПовышает вероятность уклонения на 50%\nПотребляет $cost маны';
+
+  @override
+  int get cost => (10 + char.baseMP * 0.2).round();
+
+  @override
+  List<BattleEvent> cast() {
+    char.applyEffect(EvasionAura(char: char));
+    return super.cast();
+  }
 }
 
 // Воин
@@ -491,10 +532,12 @@ class SwingAndCut extends DamageSkill with PlayerDamage {
     required super.char,
     required super.target,
     super.iconPath = 'assets/swing_and_cut.jpg',
-    super.tooltip = 'Swing And Cut\nНаносит урон, равный 45% от силы атаки\nПотребляет 10% базовой маны',
     super.name = 'Swing And Cut',
     super.type = DamageType.physical
   });
+
+  @override
+  String get tooltip => '$name\nНаносит $damage физического урона\nПотребляет $cost маны';
 
   @override
   int get damage => (char.ATK * 0.45).round();
@@ -505,10 +548,12 @@ class SwingAndCut extends DamageSkill with PlayerDamage {
 class SwiftRush extends SelfAuraSkill with PlayerSelfAura {
   const SwiftRush({
     required super.char,
-    super.name = 'Swift Rush',
+    super.name = 'Стремительный прорыв',
     super.iconPath = 'assets/swift_rush.jpg',
-    super.tooltip = ''
   });
+
+  @override
+  String get tooltip => '$name\nПовышает крит шанс на 15%\nПотребляет $cost маны';
 
   @override
   int get cost => (15 + char.baseMP * 0.10).round();
@@ -524,10 +569,13 @@ class BladeStrike extends DamageSkill with PlayerDamage {
   const BladeStrike({
     required super.char,
     required super.target,
-    super.name = 'Blade Strike',
+    super.name = 'Удар клинка',
     super.iconPath = 'assets/blade_strike.jpg',
     super.type = DamageType.physical
   });
+
+  @override
+  String get tooltip => '$name\nНаносит $damage физического урона. С шансом 25% накладывает эффект Превосходство\nПотребляет $cost маны';
 
   @override
   int get cost => (5 + char.baseMP * 0.07).round();
@@ -550,9 +598,11 @@ class ShiningBlade extends DamageSkill with PlayerDamage {
     required super.target,
     super.name = 'Shining Blade',
     super.type = DamageType.physical,
-    super.iconPath = 'assets/shining_blade.jpg',
-    super.tooltip = ''
+    super.iconPath = 'assets/shining_blade.jpg'
   });
+
+  @override
+  String get tooltip => '$name\nНаносит $damage физического урона пять раз\nПотребляет $cost маны';
 
   @override
   int get cost => (10 + char.baseMP * 0.2).round();
@@ -573,10 +623,12 @@ class Guillotine extends DamageSkill with PlayerDamage {
     required super.char,
     required super.target,
     super.name = 'Guillotine',
-    // TODO add guillotine icon
-    super.iconPath = 'assets/toxic_vapor.jpg',
+    super.iconPath = 'assets/guillotine.jpg',
     super.type = DamageType.physical
   });
+
+  @override
+  String get tooltip => '$name\nНаносит $damage физического урона\nПотребляет $cost маны';
 
   @override
   int get cost => (7 + char.baseMP * 0.20).round();
@@ -609,8 +661,10 @@ class Breakthrough extends DamageSkill with PlayerDamage {
     super.name = 'Breakthrough',
     super.type = DamageType.physical,
     super.iconPath = 'assets/breakthrough.jpg',
-    super.tooltip = ''
   });
+
+  @override
+  String get tooltip => '$name\nНаносит $damage физического урона\nПотребляет $cost маны';
 
   @override
   int get cost => (5 + char.baseMP * 0.1).round();
@@ -631,8 +685,10 @@ class Bloodletting extends SelfAuraSkill with PlayerSelfAura {
     required super.char,
     super.name = 'Bloodletting',
     super.iconPath = 'assets/bloodletting.jpg',
-    super.tooltip = ''
   });
+
+  @override
+  String get tooltip => '$name\nОтнимает 10% здоровья и повышает наносимый урон на 5%(не складывается)\nПотребляет $cost маны';
 
   @override
   int get cost => (15 + char.baseMP * 0.05).round();
@@ -640,6 +696,7 @@ class Bloodletting extends SelfAuraSkill with PlayerSelfAura {
   @override
   List<BattleEvent> cast() {
     char.takeDamage((char.maxHP * 0.1).round());
+    char.applyEffect(BloodlettingAura(char: char));
     return super.cast();
   }
 }
@@ -650,9 +707,11 @@ class Execution extends DamageSkill with PlayerDamage {
     required super.target,
     super.name = 'Execution',
     super.type = DamageType.physical,
-    super.iconPath = 'assets/execution.jpg',
-    super.tooltip = ''
+    super.iconPath = 'assets/execution.jpg'
   });
+
+  @override
+  String get tooltip => '$name\nНаносит $damage физического урона\nПотребляет $cost маны';
 
   @override
   int get cost => 0;
@@ -666,6 +725,59 @@ class Execution extends DamageSkill with PlayerDamage {
     return baseDamage;
   }
 }
+
+// Маг
+
+class Fireball extends DamageSkill with PlayerDamage {
+  const Fireball({
+    required super.char,
+    required super.target,
+    super.name = 'Fireball',
+    super.type = DamageType.magical,
+    super.iconPath = 'assets/fireball.jpg'
+  });
+
+  @override
+  String get tooltip => '$name\nНаносит $damage магического урона и накладывает Горение\nПотребляет $cost маны';
+
+  @override
+  int get cost => (10 + char.baseMP * 0.15).round();
+
+  @override
+  int get damage => (char.MATK * 0.45).round();
+
+  @override
+  List<BattleEvent> cast() {
+    target.applyEffect(Flame(char: char, target: target));
+    return super.cast();
+  }
+}
+
+class FireBlast extends DamageSkill with PlayerDamage {
+  const FireBlast({
+    required super.char,
+    required super.target,
+    super.name = 'Fire Blast',
+    super.type = DamageType.magical,
+    super.iconPath = 'assets/fire_blast.jpg'
+  });
+
+  @override
+  String get tooltip => '$name\nНаносит $damage физического урона\nПотребляет $cost маны';
+
+  @override
+  int get cost => (30 + char.baseMP * 0.15).round();
+
+  @override
+  int get damage => (char.MATK * 0.25 * getEffectStack('Flame', target)).round();
+
+  @override
+  List<BattleEvent> cast() {
+    char.applyEffect(FireBlastAura(char: char, modifier: StatModifier(0.03 * getEffectStack('Flame', target))));
+    return super.cast();
+  }
+}
+
 // Мобы
 
 class Bite extends DamageSkill with MobDamage {
@@ -675,6 +787,8 @@ class Bite extends DamageSkill with MobDamage {
     super.name = 'Bite',
     super.type = DamageType.physical
   });
+  @override
+  String get tooltip => '$name\nНаносит $damage физического урона\nПотребляет $cost маны';
 
   @override
   int get damage => (char.ATK * 0.8).round();
@@ -689,6 +803,8 @@ class Stump extends DamageSkill with MobDamage {
     super.name = 'Stump',
     super.type = DamageType.physical
   });
+  @override
+  String get tooltip => '$name\nНаносит $damage физического урона\nПотребляет $cost маны';
 
   @override
   int get damage => (char.ATK * 0.9).round();
@@ -703,6 +819,8 @@ class Ram extends DamageSkill with MobDamage {
     super.name = 'Ram',
     super.type = DamageType.physical
   });
+  @override
+  String get tooltip => '$name\nНаносит $damage физического урона\nПотребляет $cost маны';
 
   @override
   int get damage => (char.ATK * 1.5).round();
