@@ -1,6 +1,7 @@
 
-import 'package:arentale/data/service/database_service.dart';
+import 'package:arentale/domain/const.dart';
 import 'package:arentale/domain/player_model.dart';
+import 'package:arentale/domain/state/equip/equip_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +9,23 @@ import '../domain/game/equip/equip_item.dart';
 import '../domain/game/player/player.dart';
 import '../generated/l10n.dart';
 import 'char_info/stat_element.dart';
+
+Widget? _getIcon(EquipItem item) {
+  const size = 60;
+  final Map<String, Widget> icons = {
+    '': Image.asset(''),
+    'none': Image.asset('assets/blank_icon.png', cacheHeight: size),
+    'cloth': Image.asset('assets/cloth_armor.png', cacheHeight: size),
+    'leather': Image.asset('assets/leather_armor.png', cacheHeight: size),
+    'mail': Image.asset('assets/mail_armor.png', cacheHeight: size),
+    'plate': Image.asset('assets/plate_armor.png', cacheHeight: size),
+    'dagger': Image.asset('assets/dagger.png', cacheHeight: size),
+    '1h sword': Image.asset('assets/one_handed_sword.png', cacheHeight: size),
+    '1h axe': Image.asset('assets/one_handed_axe.png', cacheHeight: size),
+    '1h blunt': Image.asset('assets/one_handed_blunt.png', cacheHeight: size),
+  };
+  return icons[item.equipType];
+}
 
 class EquipScreen extends StatelessWidget {
   const EquipScreen({super.key});
@@ -19,24 +37,82 @@ class EquipScreen extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     }
     Player player = playerModel.player;
-    List<EquipItem> items = [player.equip.rHand, player.equip.lHand, player.equip.armor, player.equip.trinket];
+    List<_EquipWidget> items = [
+      _EquipWidget(item: player.equip.rHand, equipSlot: 'rHand'),
+      _EquipWidget(item: player.equip.lHand, equipSlot: 'lHand'),
+      _EquipWidget(item: player.equip.armor, equipSlot: 'armor'),
+      _EquipWidget(item: player.equip.trinket, equipSlot: 'trinket')
+    ];
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Equip'),
+        title: const Text('Экипировка'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          Stack(
+            alignment: AlignmentDirectional.center,
             children: [
-              _EquipWidget(item: items[0]),
-              _EquipWidget(item: items[1]),
-              _EquipWidget(item: items[2]),
-              _EquipWidget(item: items[3]),
+              //Image.asset('assets/person.png'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  items[0],
+                  const Padding(padding: EdgeInsets.symmetric(horizontal: 34)),
+                  items[1],
+                ],
+              ),
+              Column(
+                children: [
+                  items[2],
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 34)),
+                  items[3],
+                ]
+              )
             ],
           ),
+          Expanded(
+            child: Card(
+              child: items.any((element) => element.isActive) ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(player.info['name'], style: const TextStyle(fontSize:24, fontWeight: FontWeight.w600)),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text('Здоровье: ${player.stats.HP.finalValue} + ${player.equip.getStat('HP')}', style: const TextStyle(fontSize:18)),
+                      Text('Мана: ${player.stats.MP.finalValue} + ${player.equip.getStat('MP')}', style: const TextStyle(fontSize:18))
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text('Сила: ${player.stats.STR.finalValue} + ${player.equip.getStat('STR')}', style: const TextStyle(fontSize:18)),
+                      Text('Интеллект: ${player.stats.INT.finalValue} + ${player.equip.getStat('INT')}', style: const TextStyle(fontSize:18))
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text('Выносливость: ${player.stats.VIT.finalValue} + ${player.equip.getStat('VIT')}', style: const TextStyle(fontSize:18)),
+                      Text('Дух: ${player.stats.SPI.finalValue} + ${player.equip.getStat('SPI')}', style: const TextStyle(fontSize:18))
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text('Ловкость: ${player.stats.DEX.finalValue} + ${player.equip.getStat('DEX')}', style: const TextStyle(fontSize:18)),
+                    ],
+                  ),
+                ],
+              ) :
+              Placeholder()
+            ),
+          )
         ],
       )
     );
@@ -44,100 +120,116 @@ class EquipScreen extends StatelessWidget {
 }
 
 class _EquipWidget extends StatelessWidget {
+  final String equipSlot;
   final EquipItem item;
-  const _EquipWidget({super.key, required this.item});
+  _EquipWidget({super.key, required this.item, required this.equipSlot});
 
-  Widget? _getIcon() {
-    final Map<String, Widget> icons = {
-      '': Image.asset(''),
-      'none': Image.asset('assets/blank_icon.png', cacheHeight: 80),
-      'cloth': Image.asset('assets/cloth_armor.png', cacheHeight: 80),
-      'leather': Image.asset('assets/leather_armor.png', cacheHeight: 80),
-      'mail': Image.asset('assets/mail_armor.png', cacheHeight: 80),
-      'plate': Image.asset('assets/plate_armor.png', cacheHeight: 80),
-      'dagger': Image.asset('assets/dagger.png', cacheHeight: 80),
-      '1h sword': Image.asset('assets/one_handed_sword.png', cacheHeight: 80),
-      '1h axe': Image.asset('assets/one_handed_axe.png', cacheHeight: 80),
-      '1h blunt': Image.asset('assets/one_handed_blunt.png', cacheHeight: 80),
-    };
-    return icons[item.equipType];
+  bool isActive = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        isActive = !isActive;
+      },
+      icon: _getIcon(item) ?? Image.asset('assets/blank_icon.png', cacheHeight: 80)
+    );
   }
+}
+
+class _EquipChangeDialog extends StatelessWidget {
+  final EquipItem item;
+  final String slot;
+  const _EquipChangeDialog({super.key, required this.item, required this.slot});
 
   List<Widget> _getStats(List<String> statNames) {
-    final List stats = [item.slots.join(', '), item.equipType, item.equipATK.toString(), item.equipMATK.toString(), item.equipSTR.toString(), item.equipINT.toString(), item.equipVIT.toString(), item.equipSPI.toString(), item.equipDEX.toString()];
+    final List stats = [item.slots.join(', '), item.equipType,
+      item.equipATK.toString(), item.equipMATK.toString(),
+      item.equipSTR.toString(), item.equipINT.toString(),
+      item.equipVIT.toString(), item.equipSPI.toString(),
+      item.equipDEX.toString()];
     if (item.equipType == 'none') {
       return [];
     }
     List<Widget> result = [];
     stats.asMap().forEach((index, value) {
-      result.add(Flexible(
-        child: StatElement(
-          statName: statNames[index],
-          statValue: stats[index],
-        ),
-      ));
+      result.add(
+        Flexible(
+          child: StatElement(
+            statName: statNames[index],
+            statValue: stats[index],
+          ),
+        ));
     });
     return result;
   }
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        showDialog<void>(
-          context: context,
-          builder: (BuildContext dialogContext) {
-            return AlertDialog(
-              title: Text(item.equipName),
-              content: Column(
-                  children:_getStats([S.of(context).slots, S.of(context).type, S.of(context).attack, S.of(context).spellPower, S.of(context).strength, S.of(context).intelligence, S.of(context).vitality, S.of(context).spirit, S.of(context).dexterity])
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Назад'),
-                  onPressed: () {
-                    Navigator.of(dialogContext).pop(); // Dismiss alert dialog
-                  },
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      // showDialog(context: context, builder: (BuildContext cont) {
-                      //   return _EquipChange(inventory: pla, slot: item.slots);
-                      // });
-                    },
-                    child: const Text('Сменить')
-                )
-              ],
-            );
+    return AlertDialog(
+      title: Text(item.equipName),
+      content: Column(
+          children: _getStats([S.of(context).slots, S.of(context).type,
+            S.of(context).attack, S.of(context).spellPower,
+            S.of(context).strength, S.of(context).intelligence,
+            S.of(context).vitality, S.of(context).spirit, S.of(context).dexterity])
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Назад'),
+          onPressed: () {
+            navigatorKey.currentState!.pop();
           },
-        );
-      },
-      icon: _getIcon() ?? Image.asset('assets/blank_icon.png')
+        ),
+        ElevatedButton(
+            onPressed: () {
+              navigatorKey.currentState!.pop();
+              navigatorKey.currentState!.push(MaterialPageRoute(builder: (_) => _EquipChange(slot: slot)));
+            },
+            child: const Text('Сменить')
+        )
+      ],
     );
   }
 }
 
 class _EquipChange extends StatelessWidget {
-  final Map<String, Map> inventory;
-  final List slot;
-  const _EquipChange({super.key, required this.inventory, required this.slot});
-
-  Future<List> _getValidItems() async {
-    final allItems = await DBService().getAllItems();
-    final result = [];
-    for (var key in inventory.keys) {
-      if(allItems[key].containsKey('slot') && allItems[key]['slot'].contains(slot)) {
-        result.add(EquipItem.fromJson(allItems[key], key));
-      }
-    }
-    return result;
-  }
+  final String slot;
+  const _EquipChange({super.key, required this.slot});
 
   @override
   Widget build(BuildContext context) {
-    return const AlertDialog(
-      scrollable: true,
-      title: Text('Инвентарь'),
+    final equipBloc = context.watch<EquipBloc>();
+    final state = equipBloc.state;
+    if (state is EquipValidState) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          child: Column(children: state.validEquip),
+        )
+      );
+    }
+    equipBloc.add(EquipGetValidEvent(slot));
+    return const Center(child: CircularProgressIndicator());
+  }
+}
+
+class EquipTile extends StatelessWidget {
+  final void Function() onTap;
+  final EquipItem item;
+  const EquipTile(this.item, {super.key, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final playerModel = context.watch<PlayerModel?>();
+    return ListTile(
+      leading: _getIcon(item),
+      title: Text(item.equipName),
+      onTap: () {
+        onTap();
+        playerModel!.markAsNeededToUpdate();
+      }
     );
   }
 }
+

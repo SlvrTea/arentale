@@ -2,9 +2,7 @@
 import 'dart:math';
 
 import 'package:arentale/data/service/player_service.dart';
-import 'package:arentale/domain/game/battle/battle_event.dart';
 import 'package:arentale/domain/game/battle/battle_loop.dart';
-import 'package:arentale/domain/game/battle/on_event.dart';
 import 'package:arentale/domain/game/game_entities/skill.dart';
 import 'package:arentale/domain/player_model.dart';
 
@@ -19,9 +17,7 @@ class BattleController {
   String log = '';
   bool isBattle = true;
 
-  BattleController(this.player, this.mob, this.playerModel) {
-    player.onEvent.add(Bonecrusher());
-  }
+  BattleController(this.player, this.mob, this.playerModel);
 
   void battleEnd() {
     isBattle = false;

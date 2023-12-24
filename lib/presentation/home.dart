@@ -1,5 +1,7 @@
+import 'package:arentale/domain/const.dart';
 import 'package:arentale/presentation/char_info/char_info.dart';
 import 'package:arentale/presentation/equip_screen.dart';
+import 'package:arentale/presentation/inventory/inventory.dart';
 import 'package:arentale/presentation/locations/location.dart';
 import 'package:arentale/presentation/locations/slinsk.dart';
 import 'package:arentale/presentation/game_map/map.dart';
@@ -12,8 +14,8 @@ GameLocation getLocation() {
   final userInfo = Hive.box('userInfo');
   final userLoc = userInfo.get('location');
   final locations = {
-    'slinskPrologue': Slinsk(initDialog: userInfo.get('dialogId', defaultValue: 'd1.1')),
-    'slinskTavern': Slinsk(initDialog: userInfo.get('dialogId', defaultValue: 'd1.1'))
+    'slinskPrologue': Slinsk(),
+    'slinskTavern': Slinsk()
   };
   return locations[userLoc]!;
 }
@@ -43,8 +45,10 @@ class _MapButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
         onPressed: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => MapScreen(map: getLocation().locationMap))
+          navigatorKey.currentState!.push(
+              MaterialPageRoute(
+                  builder: (_) => MapScreen(map: getLocation().locationMap)
+              )
           );
         },
         icon: const Icon(Icons.map)
@@ -58,48 +62,57 @@ class _Drawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Flexible(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                ListTile(
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const CharInfo())
-                    );
-                  },
-                  leading: const Icon(Icons.person),
-                  title: const Text('Profile'),
-                ),
-                ListTile(
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const EquipScreen())
-                    );
-                  },
-                  leading: const Icon(Icons.shopping_bag),
-                  title: const Text('Equip'),
-                ),
-                ListTile(
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const SkillTree())
-                    );
-                  },
-                  leading: const Icon(Icons.book),
-                  title: const Text('Skill tree'),
-                ),
-              ],
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      navigatorKey.currentState!.push(
+                          MaterialPageRoute(builder: (_) => const CharInfo())
+                      );
+                    },
+                    leading: const Icon(Icons.person),
+                    title: const Text('Profile'),
+                  ),
+                  ListTile(
+                    onTap: () {
+                      navigatorKey.currentState!.push(
+                          MaterialPageRoute(builder: (_) => const EquipScreen())
+                      );
+                    },
+                    leading: const Icon(Icons.shopping_bag),
+                    title: const Text('Equip'),
+                  ),
+                  ListTile(
+                    onTap: () {
+                      navigatorKey.currentState!.push(
+                          MaterialPageRoute(builder: (_) => const SkillTree())
+                      );
+                    },
+                    leading: const Icon(Icons.book),
+                    title: const Text('Skill tree'),
+                  ),
+                  ListTile(
+                    onTap: () {
+                      navigatorKey.currentState!.push(
+                          MaterialPageRoute(builder: (_) => const Inventory())
+                      );
+                    },
+                    leading: const Icon(Icons.backpack_rounded),
+                    title: const Text('Инвентарь'),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      )
+          ],
+        )
     );
   }
 }

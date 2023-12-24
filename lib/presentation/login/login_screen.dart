@@ -1,6 +1,5 @@
 
 import 'package:arentale/presentation/home.dart';
-import 'package:arentale/presentation/locations/location.dart';
 import 'package:arentale/presentation/login/new_char.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';

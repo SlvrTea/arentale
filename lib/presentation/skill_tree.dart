@@ -20,12 +20,13 @@ class _SkillButton extends StatelessWidget {
 }
 
 class _AdvancedClassButton extends StatelessWidget {
+  final int requiredLevel;
   final Image icon;
   final String title;
   final String description;
   final PlayerModel playerModel;
   final String newClass;
-  const _AdvancedClassButton({super.key, required this.icon, required this.description, required this.title, required this.playerModel, required this.newClass});
+  const _AdvancedClassButton({super.key, required this.icon, required this.description, required this.title, required this.playerModel, required this.newClass, this.requiredLevel = 5});
 
   @override
   Widget build(BuildContext context) {
@@ -34,26 +35,8 @@ class _AdvancedClassButton extends StatelessWidget {
         onTap: () {
         showDialog<void>(
           context: context,
-          barrierDismissible: true,
-          builder: (BuildContext dialogContext) {
-            return AlertDialog(
-              title: Text(title),
-              content: Text('$description Нажмите кнопку "Ок", если хотите сменить класс. Это действие нельзя отменить.'),
-              actions: <Widget>[
-                ElevatedButton(
-                    onPressed: () {
-                      playerModel.playerRepository.changeClass(newClass);
-                    },
-                    child: const Text('Ок')
-                ),
-                TextButton(
-                  child: const Text('Назад'),
-                  onPressed: () {
-                    Navigator.of(dialogContext).pop();
-                  },
-                ),
-              ],
-            );
+          builder: (BuildContext context) {
+            return _AdvancedClassDialog(title: title, description: description, playerModel: playerModel, newClass: newClass, context: context, requiredLevel: requiredLevel);
           },
         );
       }
@@ -61,6 +44,40 @@ class _AdvancedClassButton extends StatelessWidget {
   }
 }
 
+class _AdvancedClassDialog extends StatelessWidget {
+  final BuildContext context;
+  final String title;
+  final String description;
+  final PlayerModel playerModel;
+  final String newClass;
+  final int requiredLevel;
+
+  const _AdvancedClassDialog({super.key, required this.title, required this.description, required this.playerModel, required this.newClass, required this.context, required this.requiredLevel});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(title),
+      content: Text('$description Нажмите кнопку "Ок", если хотите сменить класс. Это действие нельзя отменить.'),
+      actions: <Widget>[
+        ElevatedButton(
+            onPressed: () {
+              if (playerModel.player.info['level'] >= requiredLevel) {
+                playerModel.playerRepository.changeClass(newClass);
+              }
+            },
+            child: const Text('Ок')
+        ),
+        TextButton(
+          child: const Text('Назад'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+}
 
 class SkillTree extends StatelessWidget {
    const SkillTree({super.key});

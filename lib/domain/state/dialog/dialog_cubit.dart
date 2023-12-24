@@ -1,8 +1,12 @@
 import 'package:bloc/bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class DialogCubit extends Cubit<String> {
-  String dialogId;
-  DialogCubit(this.dialogId) : super(dialogId);
+  final userInfo = Hive.box('userInfo');
+  DialogCubit() : super(Hive.box('userInfo').get('dialogId'));
 
-  void pushDialog(String toDialog) => emit(toDialog);
+  void pushDialog(String toDialog) {
+    emit(toDialog);
+    userInfo.put('dialogId', toDialog);
+  }
 }

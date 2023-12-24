@@ -1,7 +1,6 @@
 
 import 'package:arentale/domain/game/battle/battle_event.dart';
 import 'package:arentale/domain/game/game_entities/game_object.dart';
-import 'package:arentale/domain/game/game_entities/stat.dart';
 import 'package:arentale/domain/game/game_entities/stat_modifier.dart';
 
 abstract class Duration {

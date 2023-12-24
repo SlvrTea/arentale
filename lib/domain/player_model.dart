@@ -6,7 +6,6 @@ import 'package:arentale/internal/dependencies/repository_module.dart';
 import 'game/player/player.dart';
 
 class PlayerModel {
-  bool _needToUpdate = false;
   Player player;
   final PlayerRepository playerRepository = RepositoryModule.playerRepository();
 
@@ -15,9 +14,7 @@ class PlayerModel {
   });
 
   void markAsNeededToUpdate() async {
-    _needToUpdate = true;
     player = await playerRepository.getPlayer();
-    _needToUpdate = false;
   }
 
   void changeLocation(String location) {
