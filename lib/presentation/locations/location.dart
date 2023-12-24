@@ -1,5 +1,4 @@
 import 'package:arentale/domain/const.dart';
-import 'package:arentale/domain/state/dialog/dialog_cubit.dart';
 import 'package:flutter/material.dart';
 import '../battle/battle.dart';
 import '../game_dialog/dialog.dart';

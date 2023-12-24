@@ -1,7 +1,6 @@
-import 'package:arentale/domain/state/dialog/dialog_cubit.dart';
+
 import 'package:arentale/presentation/game_map/map_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MapScreen extends StatelessWidget {
   final Map<int, Widget> map;
