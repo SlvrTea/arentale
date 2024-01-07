@@ -35,6 +35,9 @@ abstract class GameLocation extends GameDialog {
       DialogTags.startBattle: startBattle,
     };
     for (String dialogId in dialogTree.keys) {
+      if (!dialogTree[dialogId].containsKey('options')) {
+        continue;
+      }
       for (var e in dialogTree[dialogId]['options'].values) {
         if (e.containsKey('tags')) {
           for (var tag in e['tags']) {

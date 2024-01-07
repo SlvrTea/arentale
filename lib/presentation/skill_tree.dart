@@ -1,10 +1,10 @@
 import 'package:arentale/domain/game/game_entities/skill.dart';
+import 'package:arentale/domain/state/player/player_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:info_popup/info_popup.dart';
 import 'package:provider/provider.dart';
 
 import '../domain/game/player/player.dart';
-import '../domain/player_model.dart';
 
 class _SkillButton extends StatelessWidget {
   final Skill skill;
@@ -24,9 +24,8 @@ class _AdvancedClassButton extends StatelessWidget {
   final Image icon;
   final String title;
   final String description;
-  final PlayerModel playerModel;
   final String newClass;
-  const _AdvancedClassButton({super.key, required this.icon, required this.description, required this.title, required this.playerModel, required this.newClass, this.requiredLevel = 5});
+  const _AdvancedClassButton({super.key, required this.icon, required this.description, required this.title, required this.newClass, this.requiredLevel = 5});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +35,7 @@ class _AdvancedClassButton extends StatelessWidget {
         showDialog<void>(
           context: context,
           builder: (BuildContext context) {
-            return _AdvancedClassDialog(title: title, description: description, playerModel: playerModel, newClass: newClass, context: context, requiredLevel: requiredLevel);
+            return _AdvancedClassDialog(title: title, description: description, newClass: newClass, context: context, requiredLevel: requiredLevel);
           },
         );
       }
@@ -48,34 +47,37 @@ class _AdvancedClassDialog extends StatelessWidget {
   final BuildContext context;
   final String title;
   final String description;
-  final PlayerModel playerModel;
   final String newClass;
   final int requiredLevel;
 
-  const _AdvancedClassDialog({super.key, required this.title, required this.description, required this.playerModel, required this.newClass, required this.context, required this.requiredLevel});
+  const _AdvancedClassDialog({super.key, required this.title, required this.description, required this.newClass, required this.context, required this.requiredLevel});
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(title),
-      content: Text('$description Нажмите кнопку "Ок", если хотите сменить класс. Это действие нельзя отменить.'),
-      actions: <Widget>[
-        ElevatedButton(
+    final cubit = context.watch<PlayerCubit>();
+    if (cubit.state is PlayerLoadedState) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text('$description Нажмите кнопку "Ок", если хотите сменить класс. Это действие нельзя отменить.'),
+        actions: <Widget>[
+          ElevatedButton(
+              onPressed: () {
+                if (cubit.state.player.info['level'] >= requiredLevel) {
+                  cubit.changeClass(newClass);
+                }
+              },
+              child: const Text('Ок')
+          ),
+          TextButton(
+            child: const Text('Назад'),
             onPressed: () {
-              if (playerModel.player.info['level'] >= requiredLevel) {
-                playerModel.playerRepository.changeClass(newClass);
-              }
+              Navigator.of(context).pop();
             },
-            child: const Text('Ок')
-        ),
-        TextButton(
-          child: const Text('Назад'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-    );
+          ),
+        ],
+      );
+    }
+    return const Center(child: CircularProgressIndicator());
   }
 }
 
@@ -84,11 +86,11 @@ class SkillTree extends StatelessWidget {
 
    @override
    Widget build(BuildContext context) {
-     PlayerModel? playerModel = context.watch<PlayerModel?>();
-     if (playerModel == null) {
+     final cubit = context.watch<PlayerCubit>();
+     if (cubit.state is! PlayerLoadedState) {
        return const Center(child: CircularProgressIndicator());
      }
-     Player player = playerModel.player;
+     final Player player = cubit.state.player;
 
      final classSkill = {
        'Warrior': {
@@ -105,7 +107,6 @@ class SkillTree extends StatelessWidget {
          5: [
            _AdvancedClassButton(
              newClass: 'Blade Master',
-             playerModel: playerModel,
              title: 'Мастер клинка',
              icon: Image.asset('assets/shining_blade.jpg'),
              description: 'Мастер клинка(основная характеристика: ловкость)\n'
@@ -114,7 +115,6 @@ class SkillTree extends StatelessWidget {
            ),
            _AdvancedClassButton(
              newClass: 'Berserk',
-             playerModel: playerModel,
              title: 'Берсерк',
              icon: Image.asset('assets/battle_lust.jpg'),
              description: 'Берсерк(основная характеристика: сила)\n'
@@ -123,7 +123,6 @@ class SkillTree extends StatelessWidget {
            ),
            _AdvancedClassButton(
              newClass: 'Guardian',
-             playerModel: playerModel,
              title: 'Страж',
              icon: Image.asset('assets/shield_bash.jpg'),
              description: 'Страж(основная характеристика: выносливость)\n'
@@ -145,21 +144,18 @@ class SkillTree extends StatelessWidget {
          5: [
            _AdvancedClassButton(
              newClass: 'Poison Master',
-             playerModel: playerModel,
              title: 'Мастер Ядов',
              icon: Image.asset('assets/intoxication.jpg'),
              description: ''
            ),
            _AdvancedClassButton(
              newClass: 'Thug',
-             playerModel: playerModel,
              title: 'Головорез',
              icon: Image.asset('assets/blood_fountain.jpg'), 
              description: ''
            ),
            _AdvancedClassButton(
              newClass: 'Shadow',
-             playerModel: playerModel,
              title: 'Тень',
              icon: Image.asset('assets/dusk.jpg'),
              description: ''

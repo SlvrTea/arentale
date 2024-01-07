@@ -11,13 +11,16 @@ class PlayerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const CircleAvatar(
-          child: Icon(Icons.account_circle_outlined),
+    return SizedBox(
+      height: 95,
+      child: Card(
+        child: ListTile(
+          leading: const CircleAvatar(
+            child: Icon(Icons.account_circle_outlined),
+          ),
+          title: Text(char.info['name']),
+          trailing: _TileContent(char: char),
         ),
-        title: Text(char.info['name']),
-        trailing: _TileContent(char: char),
       ),
     );
   }
@@ -29,10 +32,13 @@ class EnemyTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: _TileContent(char: char),
-        title: Text(char.info['name']),
+    return SizedBox(
+      height: 95,
+      child: Card(
+        child: ListTile(
+          leading: _TileContent(char: char),
+          title: Text(char.info['name']),
+        ),
       ),
     );
   }

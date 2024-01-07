@@ -1,8 +1,8 @@
 
-import 'package:arentale/domain/player_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../domain/state/player/player_cubit.dart';
 import '../home.dart';
 import 'battle_log.dart';
 
@@ -12,14 +12,16 @@ class BattleEnd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final playerModel = context.watch<PlayerModel?>();
+    final cubit = context.watch<PlayerCubit>();
+    if (cubit.state is! PlayerLoadedState) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         BattleLog(log),
         ElevatedButton(
             onPressed: () {
-              playerModel!.markAsNeededToUpdate();
               Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => const Home())
               );

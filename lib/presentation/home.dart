@@ -25,14 +25,16 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = getLocation();
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text(S.of(context).appbar),
         actions: const [
           _MapButton()
         ],
       ),
-      body: getLocation(),
+      body: loc,
       drawer: const _Drawer(),
     );
   }

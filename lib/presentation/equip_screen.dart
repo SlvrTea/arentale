@@ -1,12 +1,12 @@
 
 import 'package:arentale/domain/const.dart';
-import 'package:arentale/domain/player_model.dart';
 import 'package:arentale/domain/state/equip/equip_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../domain/game/equip/equip_item.dart';
 import '../domain/game/player/player.dart';
+import '../domain/state/player/player_cubit.dart';
 import '../generated/l10n.dart';
 import 'char_info/stat_element.dart';
 
@@ -32,11 +32,11 @@ class EquipScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PlayerModel? playerModel = context.watch<PlayerModel?>();
-    if (playerModel == null) {
+    final cubit = context.watch<PlayerCubit>();
+    if (cubit.state is! PlayerLoadedState) {
       return const Center(child: CircularProgressIndicator());
     }
-    Player player = playerModel.player;
+    final Player player = cubit.state.player;
     List<_EquipWidget> items = [
       _EquipWidget(item: player.equip.rHand, equipSlot: 'rHand'),
       _EquipWidget(item: player.equip.lHand, equipSlot: 'lHand'),
@@ -110,7 +110,7 @@ class EquipScreen extends StatelessWidget {
                   ),
                 ],
               ) :
-              Placeholder()
+              const Placeholder()
             ),
           )
         ],
@@ -221,14 +221,10 @@ class EquipTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final playerModel = context.watch<PlayerModel?>();
     return ListTile(
       leading: _getIcon(item),
       title: Text(item.equipName),
-      onTap: () {
-        onTap();
-        playerModel!.markAsNeededToUpdate();
-      }
+      onTap: onTap
     );
   }
 }

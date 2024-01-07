@@ -6,7 +6,8 @@ import 'package:arentale/presentation/battle/battle_end_screen.dart';
 import 'package:arentale/presentation/battle/main_battle_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/player_model.dart';
+
+import '../../domain/state/player/player_cubit.dart';
 
 class Battle extends StatelessWidget {
   final List<String> mobs;
@@ -28,9 +29,10 @@ class Battle extends StatelessWidget {
             else if (state is BattleEndState) {
               return BattleEnd(log: state.log);
             }
-            final playerModel = context.watch<PlayerModel?>();
-            if (playerModel != null) {
-              BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent(mobs[Random().nextInt(mobs.length)], playerModel));
+            final cubit = context.watch<PlayerCubit>();
+            if (cubit.state is PlayerLoadedState) {
+              var mob = mobs[Random().nextInt(mobs.length)];
+              BlocProvider.of<BattleBloc>(context).add(BattleLoadingEvent(mob, cubit));
             }
             return const Center(child: CircularProgressIndicator());
           },

@@ -763,7 +763,7 @@ class FireBlast extends DamageSkill with PlayerDamage {
   });
 
   @override
-  String get tooltip => '$name\nНаносит $damage физического урона\nПотребляет $cost маны';
+  String get tooltip => '$name\nНаносит $damage магического урона\nПотребляет $cost маны';
 
   @override
   int get cost => (30 + char.baseMP * 0.15).round();

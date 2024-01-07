@@ -6,26 +6,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class GameDialog extends StatelessWidget {
+abstract class GameDialog extends StatelessWidget {
   final Map dialogTree;
+  String backgroundPath = '';
   GameDialog({super.key, required this.dialogTree});
 
-  final userInfo = Hive.box('userInfo');
+  final _userInfo = Hive.box('userInfo');
 
   void addTags(List<PlayerTags> tags) {
-    final List userTags = userInfo.get('tags');
+    final List userTags = _userInfo.get('tags');
     userTags.addAll(tags);
   }
 
   bool isValid(PlayerTags tag) {
-    final playerTags = userInfo.get('tags');
+    final playerTags = _userInfo.get('tags');
     if (playerTags.contains(tag)) {
       return true;
     }
     return false;
   }
 
-  List<Widget> getOptions(String dialogID, BuildContext context) {
+  List<Widget> getOptions(String dialogID, DialogCubit cubit) {
+    if (!dialogTree[dialogID].containsKey('options')) {
+      return [];
+    }
     final List<Widget> result = [];
     for (var e in dialogTree[dialogID]['options'].keys) {
       if (dialogTree[dialogID]['options'][e].containsKey('required')) {
@@ -40,7 +44,7 @@ class GameDialog extends StatelessWidget {
               dialogTree[dialogID]['options'][e]['onSelect'].forEach((e) => e());
             }
             if (dialogTree[dialogID]['options'][e].containsKey('goto')) {
-              context.read<DialogCubit>().pushDialog(dialogTree[dialogID]['options'][e]['goto']);
+              cubit.pushDialog(dialogTree[dialogID]['options'][e]['goto']);
             }
             if (dialogTree[dialogID]['options'][e].containsKey('add')) {
               addTags(dialogTree[dialogID]['options'][e]['add']);
@@ -51,29 +55,54 @@ class GameDialog extends StatelessWidget {
     return result;
   }
 
+  void showNext(DialogCubit cubit) {
+    final currentDialogId = cubit.state.dialogId;
+    if (dialogTree[currentDialogId].containsKey('options') && getOptions(currentDialogId, cubit).isNotEmpty) {
+      cubit.showOptions(currentDialogId);
+      return;
+    } else {
+      cubit.pushDialog(dialogTree[currentDialogId]['goto']);
+    }
+  }
+
+  Widget? getContent(DialogCubit cubit) {
+    switch (cubit.state.runtimeType) {
+      case DialogText:
+        return Text(dialogTree[cubit.state.dialogId]['msg'], style: const TextStyle(fontSize: 18));
+      case DialogOptions:
+        return Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: getOptions(cubit.state.dialogId, cubit));
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final dialogId = userInfo.get('dialogId');
-    final state = context.watch<DialogCubit>().state;
+    final cubit = context.watch<DialogCubit>();
     return SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _DialogWidget(dialog: dialogTree[state]['msg']),
-          SizedBox(
-            height: 150,
-            width: MediaQuery.of(context).size.width,
-            child: Card(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: getOptions(state, context),
-                ),
+      child: InkWell(
+        onTap: () => showNext(cubit),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SizedBox(
+              height: double.infinity,
+              width: double.infinity,
+              child: Image.asset(
+                'assets/slinsk_gate.png',
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
               ),
             ),
-          ),
-        ],
-      ),
+            Card(
+              color: const Color.fromARGB(128, 0, 0, 0),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: getContent(cubit)
+              )
+            )
+          ],
+        ),
+      )
     );
   }
 }
@@ -196,26 +225,26 @@ class GameDialog extends StatelessWidget {
 //   }
 // }
 
-class _DialogWidget extends StatelessWidget {
-  final String dialog;
-  const _DialogWidget({super.key, required this.dialog});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.65,
-      width: MediaQuery.of(context).size.width,
-      child: SingleChildScrollView(
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              dialog,
-              style: const TextStyle(fontSize: 16)
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+// class _DialogWidget extends StatelessWidget {
+//   final String dialog;
+//   const _DialogWidget({super.key, required this.dialog});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return SizedBox(
+//       height: MediaQuery.of(context).size.height * 0.65,
+//       width: MediaQuery.of(context).size.width,
+//       child: SingleChildScrollView(
+//         child: Card(
+//           child: Padding(
+//             padding: const EdgeInsets.all(16.0),
+//             child: Text(
+//               dialog,
+//               style: const TextStyle(fontSize: 16)
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
