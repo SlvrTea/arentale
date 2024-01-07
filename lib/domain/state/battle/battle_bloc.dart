@@ -7,7 +7,7 @@ import '../../game/battle/battle_controller.dart';
 import '../../game/game_entities/game_object.dart';
 import '../../game/mob.dart';
 import '../../game/player/player.dart';
-import '../../player_model.dart';
+import '../player/player_cubit.dart';
 
 part 'battle_event.dart';
 part 'battle_state.dart';
@@ -23,7 +23,7 @@ class BattleBloc extends Bloc<BattleEvent, BattleState> {
     emit(BattleLoadingState());
     Player player = await RepositoryModule.playerRepository().getPlayer();
     Mob mob = await RepositoryModule.mobRepository().getMob(event.mob);
-    emit(BattleLoadedState(player, mob, BattleController(player, mob, event.playerModel)));
+    emit(BattleLoadedState(player, mob, BattleController(player, mob, event.playerCubit)));
   }
 
   _onBattleLogUpdateEvent(BattleLogUpdateEvent event, Emitter emit) {

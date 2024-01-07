@@ -1,60 +1,30 @@
+import 'package:arentale/domain/game/player/player.dart';
+import 'package:bloc/bloc.dart';
+import 'package:meta/meta.dart';
 
-import 'package:arentale/data/service/player_service.dart';
-import 'package:arentale/domain/repository/player_repository.dart';
-import 'package:arentale/internal/dependencies/repository_module.dart';
+import '../../../data/service/player_service.dart';
+import '../../../internal/dependencies/repository_module.dart';
+import '../../repository/player_repository.dart';
 
-import 'game/player/player.dart';
+part 'player_state.dart';
 
-class PlayerModel {
-  bool _needToUpdate = false;
-  Player player;
+class PlayerCubit extends Cubit<PlayerState> {
   final PlayerRepository playerRepository = RepositoryModule.playerRepository();
+  PlayerCubit() : super(PlayerLoadingState());
 
-  PlayerModel({
-    required this.player
-  });
-
-  void markAsNeededToUpdate() async {
-    _needToUpdate = true;
-    player = await playerRepository.getPlayer();
-    _needToUpdate = false;
-  }
-
-  void changeLocation(String location) {
-    player.info['location'] = location;
-    playerRepository.changeLocation(location);
+  void loadPlayer() async {
+    final player = await playerRepository.getPlayer();
+    emit(PlayerLoadedState(player: player));
   }
 
   void addGold(int value) {
-    player.info['gold'] += value;
-    playerRepository.updateInfo(doc: 'info', field: 'gold', value: player.info['gold']);
-  }
-
-  void addExp(int value) {
-    player.info['exp'] += value;
-    if (player.info['exp'] >= player.lForm) {
-      levelUp();
-      return;
-    }
-    playerRepository.updateInfo(doc: 'info', field: 'exp', value: player.info['exp']);
-  }
-
-  void addItems(List<String> items) {
-    for (String element in items) {
-      if (player.inventory.containsKey(element)) {
-        player.inventory[element] += 1;
-        continue;
-      }
-      player.inventory.addAll({element: 1});
-      playerRepository.updateInfo(
-          doc: 'inventory',
-          field: element,
-          value: player.inventory[element]
-      );
-    }
+    state.player.info['gold'] += value;
+    playerRepository.updateInfo(doc: 'info', field: 'gold', value: state.player.info['gold']);
+    loadPlayer();
   }
 
   void levelUp() {
+    final player = state.player;
     final Map<String, Map<String, int>> levelStat = {
       'Rogue': {
         'baseHP': 5,
@@ -121,5 +91,37 @@ class PlayerModel {
           value: player.skills
       );
     }
+    loadPlayer();
+  }
+
+  void addExp(int value) {
+    state.player.info['exp'] += value;
+    if (state.player.info['exp'] >= state.player.lForm) {
+      levelUp();
+      return;
+    }
+    playerRepository.updateInfo(doc: 'info', field: 'exp', value: state.player.info['exp']);
+    loadPlayer();
+  }
+
+  void addItems(List<String> items) {
+    for (String element in items) {
+      if (state.player.inventory.containsKey(element)) {
+        state.player.inventory[element] += 1;
+        continue;
+      }
+      state.player.inventory.addAll({element: 1});
+      playerRepository.updateInfo(
+          doc: 'inventory',
+          field: element,
+          value: state.player.inventory[element]
+      );
+    }
+    loadPlayer();
+  }
+
+  void changeClass(String newClass) {
+    playerRepository.changeClass(newClass);
+    loadPlayer();
   }
 }

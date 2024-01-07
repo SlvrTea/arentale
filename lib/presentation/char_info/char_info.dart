@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/player_model.dart';
+import '../../domain/state/player/player_cubit.dart';
 import '../../generated/l10n.dart';
 
 class CharInfo extends StatelessWidget {
@@ -14,13 +14,11 @@ class CharInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PlayerModel? playerModel = context.watch<PlayerModel?>();
-    if (playerModel == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+    final cubit = context.watch<PlayerCubit>();
+    if (cubit.state is! PlayerLoadedState) {
+      return const Center(child: CircularProgressIndicator());
     }
-    Player player = playerModel.player;
+    final Player player = cubit.state.player;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),

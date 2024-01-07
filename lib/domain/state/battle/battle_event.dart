@@ -4,16 +4,16 @@ part of 'battle_bloc.dart';
 abstract class BattleEvent {}
 
 class BattleLoadingEvent extends BattleEvent {
-  String mob;
-  PlayerModel playerModel;
+  final String mob;
+  final PlayerCubit playerCubit;
 
-  BattleLoadingEvent(this.mob, this.playerModel);
+  BattleLoadingEvent(this.mob, this.playerCubit);
 }
 
 class BattleLoadedEvent extends BattleEvent {}
 
 class BattleLogUpdateEvent extends BattleEvent {
-  BattleState currentState;
+  final BattleState currentState;
 
   BattleLogUpdateEvent(this.currentState);
 }

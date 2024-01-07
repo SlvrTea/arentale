@@ -34,7 +34,7 @@ class Player extends GameObject {
     _statMP = Stat(stats.MP.finalValue + (equip.getStat('SPI') + stats.SPI.finalValue) * 3);
     _critDamage = Stat((0.5 + ((pow(DEX, DEX/1000) * 100).round() / 100)));
     _critChance = Stat(((pow(DEX, 0.05) - 1) * 100).round() / 100);
-    _evasionChance = Stat(((pow(DEX, DEX/1000) * 100).round() / 100) - 1);
+    _evasionChance = Stat(((pow(DEX, DEX/900) * 100).round() / 100) - 1);
   }
 
   @override

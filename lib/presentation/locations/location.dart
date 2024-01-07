@@ -1,6 +1,5 @@
 import 'package:arentale/domain/const.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import '../battle/battle.dart';
 import '../game_dialog/dialog.dart';
 
@@ -19,20 +18,11 @@ enum PlayerTags {
   traveller
 }
 
-abstract class GameLocation extends StatelessWidget {
-  String initDialog;
-  final userInfo = Hive.box('userInfo');
+abstract class GameLocation extends GameDialog {
   Map<int, Widget> locationMap = {};
-  Map dialogTree = {};
-  late List<String> locationMobs;
-  late GameDialog dialog;
+  List<String> locationMobs = [];
 
-  GameLocation({super.key, required this.initDialog}) {
-    dialog = GameDialog(
-      dialogTree: dialogTree,
-      initDialog: initDialog,
-    );
-  }
+  GameLocation({super.key, required super.dialogTree});
 
   void startBattle() {
     navigatorKey.currentState!.push(
@@ -45,6 +35,9 @@ abstract class GameLocation extends StatelessWidget {
       DialogTags.startBattle: startBattle,
     };
     for (String dialogId in dialogTree.keys) {
+      if (!dialogTree[dialogId].containsKey('options')) {
+        continue;
+      }
       for (var e in dialogTree[dialogId]['options'].values) {
         if (e.containsKey('tags')) {
           for (var tag in e['tags']) {
@@ -59,9 +52,6 @@ abstract class GameLocation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     setDialogCallbacks();
-    return GameDialog(
-      dialogTree: dialogTree,
-      initDialog: initDialog,
-    );
+    return super.build(context);
   }
 }
