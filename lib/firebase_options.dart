@@ -48,23 +48,4 @@ class DefaultFirebaseOptions {
         );
     }
   }
-
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAq1Pyc3b4AYRINOdKuHXybgxMPQ7qrBS0',
-    appId: '1:210090565912:web:a6020345d559b3e26ffe6d',
-    messagingSenderId: '210090565912',
-    projectId: 'arentale-24e94',
-    authDomain: 'arentale-24e94.firebaseapp.com',
-    databaseURL: 'https://arentale-24e94-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'arentale-24e94.appspot.com',
-  );
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAOxtYHAKtLkqKflr7_MxXw6_HIemiDGoc',
-    appId: '1:210090565912:android:d78ef3427c7f8faf6ffe6d',
-    messagingSenderId: '210090565912',
-    projectId: 'arentale-24e94',
-    databaseURL: 'https://arentale-24e94-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'arentale-24e94.appspot.com',
-  );
 }
